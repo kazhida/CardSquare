@@ -1,0 +1,2 @@
+# CardSquare
+プロフアプリ
