@@ -7,7 +7,7 @@ package com.abplus.cardsquare.entities
  * それを加えたインターフェースもここに用意した
  */
 interface Card {
-    val id: Long
+    val id: String
     val name: String
     val phonetic: String
     val coverImageUrl: String
@@ -15,7 +15,7 @@ interface Card {
     val introduction: String
 
     data class Implement(
-            override val id: Long,
+            override val id: String,
             override val name: String,
             override val phonetic: String,
             override val coverImageUrl: String,
@@ -25,5 +25,26 @@ interface Card {
 
     interface WithAccounts : Card {
         val accounts: List<Account>
+    }
+
+    interface Repository {
+
+        companion object {
+            val instance: Repository by lazy { Firebase() }
+        }
+
+        fun cardsOf(userId: Long): List<Card>
+        fun partnerCardsOf(userIds: List<Long>): Map<Long, List<Card>>
+
+        class Firebase : Repository {
+
+            override fun cardsOf(userId: Long): List<Card> {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun partnerCardsOf(userIds: List<Long>): Map<Long, List<Card>> {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        }
     }
 }

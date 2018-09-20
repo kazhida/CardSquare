@@ -9,7 +9,7 @@ class MyCard(
         private val myPartners: MutableList<Card.WithAccounts>
 ) : Card.WithAccounts {
 
-    override val id: Long get() = card.id
+    override val id: String get() = card.id
     override val name: String get() = card.name
     override val phonetic: String get() = card.phonetic
     override val coverImageUrl: String get() = card.coverImageUrl
