@@ -12,4 +12,33 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+    <style name="NameText">
+        <item name="android:textSize">9pt</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/textBlack</item>
+    </style>
+
+    <style name="PhoneticText">
+        <item name="android:textSize">5pt</item>
+        <item name="android:textColor">@color/textBlack</item>
+    </style>
+
+    <style name="ShadowedText">
+        <item name="android:textSize">@dimen/fs_medium</item>
+        <item name="android:shadowColor">#666</item>
+        <item name="android:shadowDx">2dp</item>
+        <item name="android:shadowDy">2dp</item>
+        <item name="android:shadowRadius">1dp</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+    </style>
+
+    <style name="ShadowedNameText" parent="ShadowedText">
+        <item name="android:textSize">@dimen/fs_large</item>
+    </style>
+
+    <style name="ShadowedPhoneticText" parent="ShadowedText">
+        <item name="android:textSize">@dimen/fs_small</item>
+    </style>
+
+
 </resources>

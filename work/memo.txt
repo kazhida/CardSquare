@@ -1,0 +1,85 @@
+/*
+        override fun instantiateItem(container: ViewGroup, position: Int): Any {
+
+            val factory = ViewFactory(container)
+
+
+
+            if (position < items.size) {
+
+                factory.update(items[position])
+
+            }
+
+            container.addView(factory.root)
+
+            factory.root.tag = factory
+
+
+
+            return factory.root
+
+        }
+
+
+
+        override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
+
+            val view = obj as View
+
+            container.removeView(view)
+
+        }
+
+
+
+        override fun getCount(): Int = items.size
+
+
+
+        override fun isViewFromObject(view: View, obj: Any): Boolean = view === obj
+
+
+
+        override fun onPageScrollStateChanged(state: Int) {}
+
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+
+
+        override fun onPageSelected(position: Int) {
+
+            setNames(items, position)
+
+        }
+
+ private inner class ViewFactory(parent: ViewGroup) {
+
+        val root: View = layoutInflater.inflate(R.layout.view_liver_home, parent, false)
+
+        private val imageView = root.findViewById<ImageView>(R.id.cover_image)
+
+
+
+        fun update(liver: Liver) {
+
+            GlideApp.with(this@LiverFragment)
+
+                    .load(liver.imageUrl)
+
+                    .placeholder(R.drawable.lib_card_loading)
+
+                    .error(R.drawable.lib_card_notfound)
+
+                    .fallback(R.drawable.lib_card_notfound)
+
+                    .dontAnimate()
+
+                    .fitCenter()
+
+                    .into(imageView)
+
+        }
+
+    }
+ */
