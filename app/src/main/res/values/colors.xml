@@ -6,7 +6,12 @@
     <color name="colorSecondary">#01579b</color>
     <color name="colorSecondaryLight">#4f83cc</color>
     <color name="colorSecondaryDark">#002f6c</color>
-    <color name="textColorPrimary">#ffffff</color>
+    <color name="textColorPrimary">#ffffee</color>
     <color name="textColorSecondary">#ffffff</color>
     <color name="colorAccent">#f57f17</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <color name="textBlack">#333</color>
 </resources>

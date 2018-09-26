@@ -41,6 +41,7 @@ captures/
 .idea/dictionaries
 .idea/libraries
 .idea/caches
+.idea/codeStyles
 .idea/compiler.xml
 .idea/misc.xml
 
@@ -65,3 +66,5 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
+
+tmp/
