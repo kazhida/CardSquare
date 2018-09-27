@@ -1,7 +1,7 @@
 package com.abplus.cardsquare.views
 
 import android.content.Context
-import android.support.constraint.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import android.util.AttributeSet
 
 class SquareLayout : ConstraintLayout {
