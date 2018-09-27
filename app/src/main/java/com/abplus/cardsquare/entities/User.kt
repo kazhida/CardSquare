@@ -1,10 +1,10 @@
 package com.abplus.cardsquare.entities
 
-interface User {
-    val uid: String
-    val cards: List<Card.WithAccounts>
-    val accounts: List<Account>
-
+data class User(
+        val userId: String,
+        val cards: List<Card.WithAccounts>,
+        val accounts: List<Account>
+) {
     interface Repository {
         fun user(userId: Long): User
 
