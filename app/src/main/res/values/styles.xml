@@ -26,9 +26,9 @@
     <style name="ShadowedText">
         <item name="android:textSize">@dimen/fs_medium</item>
         <item name="android:shadowColor">#666</item>
-        <item name="android:shadowDx">2dp</item>
-        <item name="android:shadowDy">2dp</item>
-        <item name="android:shadowRadius">1dp</item>
+        <item name="android:shadowDx">2</item>
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowRadius">1</item>
         <item name="android:textColor">@color/textColorPrimary</item>
     </style>
 
