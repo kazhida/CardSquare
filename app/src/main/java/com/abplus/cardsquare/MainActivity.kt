@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         private inner class ViewFactory(parent: ViewGroup) {
             val root: View = layoutInflater.inflate(R.layout.view_my_card, parent, false)
-            private val headerCard = root.findViewById<CardView>(R.id.header_card)
+           private val headerCard = root.findViewById<CardView>(R.id.header_card)
             private val nameText = root.findViewById<TextView>(R.id.name_text)
             private val phoneticText = root.findViewById<TextView>(R.id.phonetic_text)
             private val descriptionText = root.findViewById<TextView>(R.id.description_text)
