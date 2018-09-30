@@ -1,50 +1,34 @@
 package com.abplus.cardsquare.entities
 
+import org.parceler.Parcel
+import java.io.FileDescriptor
+
 /**
- * カードのエンティティに必要な物とその実装
- *
- * カードにはアカウントがつくので、
- * それを加えたインターフェースもここに用意した
+ * カード
  */
-interface Card {
-    val id: String
-    val name: String
-    val phonetic: String
-    val coverImageUrl: String
-    val faceIconUrl: String
-    val introduction: String
-
-    data class Implement(
-            override val id: String,
-            override val name: String,
-            override val phonetic: String,
-            override val coverImageUrl: String,
-            override val faceIconUrl: String,
-            override val introduction: String
-    ) : Card
-
-    interface WithAccounts : Card {
-        val accounts: List<Account>
-    }
-
-    interface Repository {
-
-        companion object {
-            val instance: Repository by lazy { Firebase() }
-        }
-
-        fun cardsOf(userId: Long): List<Card>
-        fun partnerCardsOf(userIds: List<Long>): Map<Long, List<Card>>
-
-        class Firebase : Repository {
-
-            override fun cardsOf(userId: Long): List<Card> {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun partnerCardsOf(userIds: List<Long>): Map<Long, List<Card>> {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-        }
-    }
+@Parcel
+data class Card(
+        val id: String,
+        val name: String,
+        val firstName: String,
+        val familyName: String,
+        val coverImageUrl: String,
+        val introduction: String,
+        val description: String,
+        val accounts: List<Account> = ArrayList(),
+        val partners: List<Card> = ArrayList()
+) {
+    // for parceler
+    @Suppress("unused")
+    private constructor() : this(
+            id = "",
+            name = "",
+            firstName = "",
+            familyName = "",
+            coverImageUrl = "",
+            introduction = "",
+            description = "",
+            accounts = ArrayList<Account>(),
+            partners = ArrayList<Card>()
+    )
 }

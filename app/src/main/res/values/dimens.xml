@@ -11,4 +11,7 @@
     <dimen name="fs_large">9pt</dimen>
 
     <dimen name="dia_account_icon">24dp</dimen>
+
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

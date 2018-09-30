@@ -1,5 +1,7 @@
 package com.abplus.cardsquare
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.navigation.NavigationView
 import androidx.core.view.GravityCompat
@@ -18,13 +20,29 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
+import com.abplus.cardsquare.entities.Account
 import com.abplus.cardsquare.entities.Card
+import com.abplus.cardsquare.entities.User
+import com.abplus.cardsquare.utils.launchFB
+import com.abplus.cardsquare.utils.promise
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    companion object {
+        private const val REQUEST_ENTRY = 6592
+    }
 
     private val toolbar: Toolbar by lazy { findViewById<Toolbar>(R.id.toolbar) }
     private val drawerLayout by lazy { findViewById<DrawerLayout>(R.id.drawer_layout) }
     private val navView by lazy { findViewById<NavigationView>(R.id.nav_view) }
+
+    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
+    private val store: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
+    private val adapter: CardPagerAdapter by lazy { CardPagerAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +59,94 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         navView.setNavigationItemSelectedListener(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val user = auth.currentUser
+        if (user == null) {
+            UserEntryActivity.start(this, REQUEST_ENTRY)
+        } else {
+            User.resetUserId(user.uid)
+            launchFB {
+                val cards = store.collection("cards")
+                        .whereEqualTo("owner", user.uid)
+                        .get()
+                        .promise()
+                val accounts = store.collection("accounts")
+                        .whereEqualTo("owner", user.uid)
+                        .get()
+                        .promise()
+                initCards(cards.await())
+                initAccounts(accounts.await())
+            }
+        }
+    }
+
+    private fun initCards(task: Task<QuerySnapshot>) {
+        if (task.isSuccessful) {
+            task.result.mapNotNull { document ->
+                val id = document.getString("id")
+                if (id != null) {
+                    Card(
+                            id = id,
+                            name = document.getString("name") ?: "",
+                            firstName = document.getString("firstName") ?: "",
+                            familyName = document.getString("familyName") ?: "",
+                            coverImageUrl = document.getString("coverImageUrl") ?: "",
+                            introduction = document.getString("introduction") ?: "",
+                            description = document.getString("description") ?: ""
+                    )
+                } else {
+                    null
+                }
+            }.let {
+                if (it.isEmpty()) {
+                    // todo: カード作成
+                } else {
+                    User.resetCards(it)
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }
+    }
+
+    private fun initAccounts(task: Task<QuerySnapshot>) {
+        if (task.isSuccessful) {
+            task.result.mapNotNull { document ->
+                val id = document.getString("id")
+                val type = document.getString("type")
+                if (id != null && type != null) {
+                    when (type) {
+                        Account.GOOGLE -> Account.google(
+                                uid = document.getString("uid") ?: "",
+                                name = document.getString("name") ?: "",
+                                email = document.getString("email") ?: ""
+                        )
+                        Account.TWITTER -> Account.twitter(
+                                uid = document.getString("uid") ?: "",
+                                name = document.getString("name") ?: "",
+                                id = document.getLong("id") ?: 0,
+                                idAsString = document.getString("name") ?: ""
+                        )
+                        Account.FACEBOOK -> Account.facebook(
+                                uid = document.getString("uid") ?: "",
+                                name = document.getString("name") ?: ""
+                        )
+                        Account.GITHUB -> Account.github(
+                                uid = document.getString("uid") ?: "",
+                                name = document.getString("name") ?: ""
+                        )
+                        else -> null
+                    }
+                } else {
+                    null
+                }
+            }.let {
+                User.resetAccounts(it)
+            }
+        }
     }
 
     override fun onBackPressed() {
@@ -88,15 +194,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_CANCELED) {
+            // ユーザ登録しないので、終了する
+            finish()
+        }
+    }
+
     private inner class CardPagerAdapter : PagerAdapter(), ViewPager.OnPageChangeListener {
 
-        private val items = ArrayList<Card>()
-
-        fun resetCards(cards: List<Card>) {
-            items.clear()
-            items.addAll(cards)
-            notifyDataSetChanged()
-        }
+        private val items: List<Card> get() = User.cards
 
         override fun isViewFromObject(view: View, obj: Any): Boolean = view === obj
         override fun getCount(): Int = items.size
@@ -126,7 +235,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         private inner class ViewFactory(parent: ViewGroup) {
             val root: View = layoutInflater.inflate(R.layout.view_my_card, parent, false)
-           private val headerCard = root.findViewById<CardView>(R.id.header_card)
+            private val headerCard = root.findViewById<CardView>(R.id.header_card)
             private val nameText = root.findViewById<TextView>(R.id.name_text)
             private val phoneticText = root.findViewById<TextView>(R.id.phonetic_text)
             private val descriptionText = root.findViewById<TextView>(R.id.description_text)

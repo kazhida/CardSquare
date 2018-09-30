@@ -10,8 +10,12 @@
     <color name="textColorSecondary">#ffffff</color>
     <color name="colorAccent">#f57f17</color>
 
+    <color name="bgGoogle">#E9301C</color>
+
+    <color name="translucent">#00FFFFFF</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="off_white">#FBFAF3</color>
 
     <color name="textBlack">#333</color>
 </resources>

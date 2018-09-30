@@ -10,6 +10,7 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <style name="NameText">
@@ -40,5 +41,10 @@
         <item name="android:textSize">@dimen/fs_small</item>
     </style>
 
-
+    <style name="LoginCaption">
+        <item name="android:textSize">7pt</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@color/translucent</item>
+    </style>
 </resources>

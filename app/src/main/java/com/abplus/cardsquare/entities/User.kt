@@ -1,18 +1,31 @@
 package com.abplus.cardsquare.entities
 
-data class User(
-        val userId: String,
-        val cards: List<Card.WithAccounts>,
-        val accounts: List<Account>
-) {
-    interface Repository {
-        fun user(userId: Long): User
+/**
+ * 現在サインインしているユーザ
+ */
+object User {
+    @Suppress("unused")
+    val userId: String get() = uid
+    val cards: List<Card> = ArrayList()
+    val accounts: List<Account> = ArrayList()
 
-        class Firebase : Repository {
+    private var uid: String = ""
 
-            override fun user(userId: Long): User {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+    fun resetUserId(userId: String) {
+        uid = userId
+    }
+
+    fun resetCards(cards: List<Card>) {
+        (this.cards as? MutableList)?.let {
+            it.clear()
+            it.addAll(cards)
+        }
+    }
+
+    fun resetAccounts(accounts: List<Account>) {
+        (this.accounts as? MutableList)?.let {
+            it.clear()
+            it.addAll(accounts)
         }
     }
 }
