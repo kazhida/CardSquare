@@ -28,4 +28,8 @@ object User {
             it.addAll(accounts)
         }
     }
+
+    fun addAccount(account: Account) {
+        (this.accounts as? MutableList)?.add(account)
+    }
 }

@@ -67,4 +67,6 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
 
+id_strings.xml
+
 tmp/

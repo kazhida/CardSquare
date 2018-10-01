@@ -3,25 +3,19 @@ package com.abplus.cardsquare
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.abplus.cardsquare.utils.LogUtil
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
+import com.abplus.cardsquare.entities.Card
+import org.parceler.Parcels
 
 class CardEditActivity : AppCompatActivity() {
 
     companion object {
+        const val CARD = "CARD"
 
-        fun start(activity: Activity, requestCode: Int) {
+        fun start(activity: Activity, card: Card, requestCode: Int) {
             Intent(activity, CardEditActivity::class.java).let {
+                it.putExtra(CARD, Parcels.wrap(card))
                 activity.startActivityForResult(it, requestCode)
             }
         }
@@ -29,11 +23,13 @@ class CardEditActivity : AppCompatActivity() {
 
     private val toolbar: Toolbar by lazy { findViewById<Toolbar>(R.id.toolbar) }
 
+    private val card: Card by lazy { Parcels.unwrap<Card>(intent.getParcelableExtra(CARD)) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_card_edit)
         setSupportActionBar(toolbar)
 
-    }
 
+    }
 }

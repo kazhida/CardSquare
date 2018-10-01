@@ -6,7 +6,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.abplus.cardsquare.entities.Account
+import com.abplus.cardsquare.entities.User
 import com.abplus.cardsquare.utils.LogUtil
+import com.abplus.cardsquare.utils.defer
+import com.abplus.cardsquare.utils.launchFB
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -15,12 +19,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 
 class UserEntryActivity : AppCompatActivity() {
 
     companion object {
         private const val REQUEST_SIGN_IN = 4425
-        const val USER = "USER"
 
         fun start(activity: Activity, requestCode: Int) {
             Intent(activity, UserEntryActivity::class.java).let {
@@ -34,7 +38,7 @@ class UserEntryActivity : AppCompatActivity() {
     private val loginButton: View by lazy { findViewById<View>(R.id.google_login) }
 
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
-
+    private val store: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,14 +103,33 @@ class UserEntryActivity : AppCompatActivity() {
     }
 
     private fun loggedIn(user: FirebaseUser) {
+        User.resetUserId(user.uid)
 
-
-
-        Intent().apply {
-            putExtra(USER, user)
-        }.let {
-            setResult(Activity.RESULT_OK, it)
-            finish()
+        launchFB {
+            // googleのaccountを登録
+            val uid = user.uid
+            val name = user.displayName ?: ""
+            val email = user.email ?: ""
+            val data = mapOf<String, String>(
+                    "uid" to uid,
+                    "name" to name,
+                    "email" to email
+            )
+            val deffer = store.collection("accounts")
+                    .add(data)
+                    .defer()
+            val task = deffer.await()
+            val account = if (task.isSuccessful) {
+                val ref = task.result
+                Account.google(ref.id, uid, name, email)
+            } else {
+                null
+            }
+            if (account != null) {
+                User.addAccount(account)
+                setResult(Activity.RESULT_OK)
+                finish()
+            }
         }
     }
 }

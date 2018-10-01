@@ -8,7 +8,8 @@ import java.io.FileDescriptor
  */
 @Parcel
 data class Card(
-        val id: String,
+        val refId: String,
+        val uid: String,
         val name: String,
         val firstName: String,
         val familyName: String,
@@ -21,7 +22,8 @@ data class Card(
     // for parceler
     @Suppress("unused")
     private constructor() : this(
-            id = "",
+            refId = "",
+            uid = "",
             name = "",
             firstName = "",
             familyName = "",
@@ -31,4 +33,19 @@ data class Card(
             accounts = ArrayList<Account>(),
             partners = ArrayList<Card>()
     )
+
+    companion object {
+        fun initial(): Card = Card(
+                refId = "",
+                uid = User.userId,
+                name = "",
+                firstName = "",
+                familyName = "",
+                coverImageUrl = "",
+                introduction = "",
+                description = "",
+                accounts = User.accounts,
+                partners = ArrayList()
+        )
+    }
 }

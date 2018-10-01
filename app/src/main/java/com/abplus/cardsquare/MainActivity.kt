@@ -23,8 +23,7 @@ import android.widget.TextView
 import com.abplus.cardsquare.entities.Account
 import com.abplus.cardsquare.entities.Card
 import com.abplus.cardsquare.entities.User
-import com.abplus.cardsquare.utils.launchFB
-import com.abplus.cardsquare.utils.promise
+import com.abplus.cardsquare.utils.*
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -34,6 +33,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     companion object {
         private const val REQUEST_ENTRY = 6592
+        private const val REQUEST_CARD = 6593
     }
 
     private val toolbar: Toolbar by lazy { findViewById<Toolbar>(R.id.toolbar) }
@@ -48,11 +48,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
-//        fab.setOnClickListener { view ->
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                    .setAction("Action", null).show()
-//        }
 
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawerLayout.addDrawerListener(toggle)
@@ -73,70 +68,73 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val cards = store.collection("cards")
                         .whereEqualTo("owner", user.uid)
                         .get()
-                        .promise()
+                        .defer()
                 val accounts = store.collection("accounts")
                         .whereEqualTo("owner", user.uid)
                         .get()
-                        .promise()
-                initCards(cards.await())
-                initAccounts(accounts.await())
-            }
-        }
-    }
-
-    private fun initCards(task: Task<QuerySnapshot>) {
-        if (task.isSuccessful) {
-            task.result.mapNotNull { document ->
-                val id = document.getString("id")
-                if (id != null) {
-                    Card(
-                            id = id,
-                            name = document.getString("name") ?: "",
-                            firstName = document.getString("firstName") ?: "",
-                            familyName = document.getString("familyName") ?: "",
-                            coverImageUrl = document.getString("coverImageUrl") ?: "",
-                            introduction = document.getString("introduction") ?: "",
-                            description = document.getString("description") ?: ""
-                    )
-                } else {
-                    null
-                }
-            }.let {
-                if (it.isEmpty()) {
-                    // todo: カード作成
-                } else {
-                    User.resetCards(it)
-                    adapter.notifyDataSetChanged()
+                        .defer()
+                loadAccounts(accounts.await())
+                if (loadCards(cards.await()) == 0) {
+                    CardEditActivity.start(this, Card.initial(), REQUEST_CARD)
                 }
             }
         }
     }
 
-    private fun initAccounts(task: Task<QuerySnapshot>) {
-        if (task.isSuccessful) {
-            task.result.mapNotNull { document ->
-                val id = document.getString("id")
-                val type = document.getString("type")
+    private fun loadCards(task: Task<QuerySnapshot>): Int = task.onSuccess { result ->
+        result.mapNotNull { document ->
+            val uid: String? = document.getString("uid")
+            if (uid == User.userId) {
+                Card(
+                        refId = document.refId,
+                        uid = uid,
+                        name = document.getStringOrEmpty("name"),
+                        firstName = document.getStringOrEmpty("firstName"),
+                        familyName = document.getStringOrEmpty("familyName"),
+                        coverImageUrl = document.getStringOrEmpty("coverImageUrl"),
+                        introduction = document.getStringOrEmpty("introduction"),
+                        description = document.getStringOrEmpty("description")
+                )
+            } else {
+                null
+            }
+        }.let {
+            User.resetCards(it)
+            adapter.notifyDataSetChanged()
+            it.size
+        }
+    } ?: 0
+
+    private fun loadAccounts(task: Task<QuerySnapshot>): Int {
+        return task.onSuccess { result ->
+            result.mapNotNull { document ->
+                val refId: String = document.reference.id
+                val id: String? = document.getString("id")
+                val type: String? = document.getString("type")
                 if (id != null && type != null) {
                     when (type) {
                         Account.GOOGLE -> Account.google(
-                                uid = document.getString("uid") ?: "",
-                                name = document.getString("name") ?: "",
-                                email = document.getString("email") ?: ""
+                                refId = refId,
+                                uid = document.getStringOrEmpty("uid"),
+                                name = document.getStringOrEmpty("name"),
+                                email = document.getStringOrEmpty("email")
                         )
                         Account.TWITTER -> Account.twitter(
-                                uid = document.getString("uid") ?: "",
-                                name = document.getString("name") ?: "",
-                                id = document.getLong("id") ?: 0,
-                                idAsString = document.getString("name") ?: ""
+                                refId = refId,
+                                uid = document.getStringOrEmpty("uid"),
+                                name = document.getStringOrEmpty("name"),
+                                id = document.getLongOrZero("id"),
+                                idAsString = document.getStringOrEmpty("name")
                         )
                         Account.FACEBOOK -> Account.facebook(
-                                uid = document.getString("uid") ?: "",
-                                name = document.getString("name") ?: ""
+                                refId = refId,
+                                uid = document.getStringOrEmpty("uid"),
+                                name = document.getStringOrEmpty("name")
                         )
                         Account.GITHUB -> Account.github(
-                                uid = document.getString("uid") ?: "",
-                                name = document.getString("name") ?: ""
+                                refId = refId,
+                                uid = document.getStringOrEmpty("uid"),
+                                name = document.getStringOrEmpty("name")
                         )
                         else -> null
                     }
@@ -145,8 +143,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }.let {
                 User.resetAccounts(it)
+                it.size
             }
-        }
+        } ?: 0
     }
 
     override fun onBackPressed() {
