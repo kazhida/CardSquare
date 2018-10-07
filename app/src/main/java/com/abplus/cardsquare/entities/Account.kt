@@ -1,7 +1,5 @@
 package com.abplus.cardsquare.entities
 
-import com.abplus.cardsquare.utils.defer
-import com.google.firebase.firestore.FirebaseFirestore
 import org.parceler.Parcel
 
 /**
@@ -11,6 +9,7 @@ import org.parceler.Parcel
 class Account private constructor(
         val refId: String,
         val uid: String,
+        val type: Type,
         val name: String,
         val email: String = "",
         val id: Long = 0,
@@ -18,7 +17,15 @@ class Account private constructor(
 ) {
     // for parceler
     @Suppress("unused")
-    private constructor() : this("", "", "")
+    private constructor() : this("", "", Type.Unknown, "")
+
+    enum class Type {
+        Unknown,
+        Google,
+        Twitter,
+        Facebook,
+        GitHub
+    }
 
     companion object {
 
@@ -31,6 +38,7 @@ class Account private constructor(
         ) = Account(
                 refId = refId,
                 uid = uid,
+                type = Type.Google,
                 name = name,
                 email = email
         )
@@ -45,6 +53,7 @@ class Account private constructor(
         ) = Account(
                 refId = refId,
                 uid = uid,
+                type = Type.Twitter,
                 name = name,
                 id = id,
                 idAsString = idAsString
@@ -55,44 +64,13 @@ class Account private constructor(
                 refId: String,
                 uid: String,
                 name: String
-        ) = Account(refId, uid, name)
+        ) = Account(refId, uid, Type.Facebook, name)
 
         const val GITHUB = "github"
         fun github(
                 refId: String,
                 uid: String,
                 name: String
-        ) = Account(refId, uid, name)
-    }
-
-
-
-    class Repository(private val store: FirebaseFirestore, private val uid: String) {
-
-        suspend fun all(): List<Account> = ArrayList<Account>().apply {
-            val accounts = store.collection("accounts")
-                    .whereEqualTo("owner", uid)
-                    .get()
-                    .defer()
-        }
-
-        suspend fun addGoogle(name: String, email: String): Account? {
-            val data = mapOf<String, Any>(
-                    "name" to name,
-                    "email" to email
-            )
-            val account = store.collection("accounts")
-                    .add(data)
-                    .defer()
-            val task = account.await()
-            return if (task.isSuccessful) {
-                val ref = task.result
-                ref.id
-                google(ref.id, uid, name, email)
-            } else {
-                null
-            }
-        }
-
+        ) = Account(refId, uid, Type.GitHub, name)
     }
 }

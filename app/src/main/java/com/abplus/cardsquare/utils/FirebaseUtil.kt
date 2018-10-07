@@ -1,5 +1,6 @@
 package com.abplus.cardsquare.utils
 
+import android.app.Dialog
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import kotlinx.coroutines.experimental.*
@@ -19,6 +20,16 @@ fun <T> Task<T>.defer(): Deferred<Task<T>> = GlobalScope.async {
 fun launchFB(proc: suspend ()->Unit) {
     GlobalScope.launch(Dispatchers.Main) {
         proc()
+    }
+}
+
+fun launchFB(dialog: Dialog, proc: suspend ()->Unit) {
+    GlobalScope.launch(Dispatchers.Main) {
+        try {
+            proc()
+        } finally {
+            dialog.dismiss()
+        }
     }
 }
 

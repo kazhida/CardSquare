@@ -4,24 +4,27 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.abplus.cardsquare.entities.Account
 import com.abplus.cardsquare.entities.User
 import com.abplus.cardsquare.utils.LogUtil
 import com.abplus.cardsquare.utils.defer
 import com.abplus.cardsquare.utils.launchFB
+import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 
-class UserEntryActivity : AppCompatActivity() {
+class UserEntryActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedListener {
 
     companion object {
         private const val REQUEST_SIGN_IN = 4425
@@ -34,7 +37,6 @@ class UserEntryActivity : AppCompatActivity() {
     }
 
     private val rootView: View  by lazy { findViewById<View>(R.id.root_view) }
-    private val toolbar: Toolbar by lazy { findViewById<Toolbar>(R.id.toolbar) }
     private val loginButton: View by lazy { findViewById<View>(R.id.google_login) }
 
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
@@ -43,7 +45,6 @@ class UserEntryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_entry)
-        setSupportActionBar(toolbar)
 
         setResult(Activity.RESULT_CANCELED)
 
@@ -64,7 +65,7 @@ class UserEntryActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_SIGN_IN) {
+        if (requestCode == REQUEST_SIGN_IN && resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = task.getResult(ApiException::class.java)
@@ -75,6 +76,11 @@ class UserEntryActivity : AppCompatActivity() {
         }
     }
 
+    override fun onConnectionFailed(connectionResult: ConnectionResult) {
+        Toast.makeText(this, connectionResult.errorMessage, Toast.LENGTH_SHORT).show()
+        LogUtil.e("Sign in failed: " + connectionResult.errorMessage)
+    }
+
     private fun signIn() {
         val options = GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -82,8 +88,12 @@ class UserEntryActivity : AppCompatActivity() {
                 .requestEmail()
                 .requestProfile()
                 .build()
-        val client = GoogleSignIn.getClient(this, options)
-        val intent = client.signInIntent
+        val client = GoogleApiClient
+                .Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, options)
+                .build()
+        val intent = Auth.GoogleSignInApi.getSignInIntent(client)
         startActivityForResult(intent, REQUEST_SIGN_IN)
     }
 
@@ -103,22 +113,20 @@ class UserEntryActivity : AppCompatActivity() {
     }
 
     private fun loggedIn(user: FirebaseUser) {
-        User.resetUserId(user.uid)
-
         launchFB {
             // googleのaccountを登録
             val uid = user.uid
             val name = user.displayName ?: ""
             val email = user.email ?: ""
-            val data = mapOf<String, String>(
+            val data = mapOf(
                     "uid" to uid,
                     "name" to name,
                     "email" to email
             )
-            val deffer = store.collection("accounts")
+            val task = store.collection("accounts")
                     .add(data)
                     .defer()
-            val task = deffer.await()
+                    .await()
             val account = if (task.isSuccessful) {
                 val ref = task.result
                 Account.google(ref.id, uid, name, email)

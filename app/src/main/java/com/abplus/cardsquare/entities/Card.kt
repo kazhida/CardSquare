@@ -1,7 +1,7 @@
 package com.abplus.cardsquare.entities
 
+import com.abplus.cardsquare.utils.RandomImages
 import org.parceler.Parcel
-import java.io.FileDescriptor
 
 /**
  * カード
@@ -35,15 +35,16 @@ data class Card(
     )
 
     companion object {
+        // 最初の一枚を作る時に使用するカード
         fun initial(): Card = Card(
                 refId = "",
                 uid = User.userId,
-                name = "",
-                firstName = "",
-                familyName = "",
-                coverImageUrl = "",
-                introduction = "",
-                description = "",
+                name = User.defaultName,
+                firstName = "John/Jane",
+                familyName = "Doe",
+                coverImageUrl = RandomImages.nextAssetImageUrl(),
+                introduction = "ここでは、自己紹介文などを記入します。\nカードの右上に表示されます。",
+                description = "ここには、なにを記入してもかまいません。\nカードの右下に表示されます。\nこのサービスでは住所は登録で来るようになっていないので、\n住所を明かす必要がある場合は、ここを使用してください。",
                 accounts = User.accounts,
                 partners = ArrayList()
         )

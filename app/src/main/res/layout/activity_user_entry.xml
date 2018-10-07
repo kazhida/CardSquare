@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/off_white"
@@ -9,7 +10,7 @@
     <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
             android:fitsSystemWindows="true"
-            android:layout_height="@dimen/app_bar_height"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:elevation="4dp"
             android:theme="@style/AppTheme.AppBarOverlay">
@@ -23,28 +24,44 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:contentScrim="?attr/colorPrimary">
 
-            <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_width="match_parent"
-                    app:layout_collapseMode="pin"
-                    app:popupTheme="@style/AppTheme.PopupOverlay"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:text="@string/description_user_entry"
-                    android:textSize="@dimen/fs_medium"
+                    android:textSize="@dimen/fs_large"
+                    android:lineSpacingExtra="2pt"
                     android:textColor="@color/textColorPrimary"
                     />
+
+            <!--<androidx.appcompat.widget.Toolbar-->
+                    <!--android:id="@+id/toolbar"-->
+                    <!--android:layout_height="?attr/actionBarSize"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_gravity="top"-->
+                    <!--app:layout_collapseMode="pin"-->
+                    <!--app:popupTheme="@style/AppTheme.PopupOverlay"/>-->
+
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:elevation="2dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             >
+        <ImageView
+                android:src="@drawable/bg_cat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                tools:ignore="ContentDescription"/>
+        <View   android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white_50"
+                />
         <androidx.cardview.widget.CardView
                 android:id="@+id/google_login"
                 android:layout_width="match_parent"
@@ -65,6 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center_vertical"
+                    android:padding="8dp"
                     android:text="@string/login_by_google"
                     android:drawableStart="@drawable/ic_sns_google_white"
                     android:drawablePadding="8dp"

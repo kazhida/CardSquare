@@ -10,7 +10,6 @@ import androidx.viewpager.widget.ViewPager
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
@@ -24,6 +23,7 @@ import com.abplus.cardsquare.entities.Account
 import com.abplus.cardsquare.entities.Card
 import com.abplus.cardsquare.entities.User
 import com.abplus.cardsquare.utils.*
+import com.abplus.cardsquare.views.SquareCardView
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -63,19 +63,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (user == null) {
             UserEntryActivity.start(this, REQUEST_ENTRY)
         } else {
-            User.resetUserId(user.uid)
-            launchFB {
+            launchFB(LoadingDialog.show(this)) {
                 val cards = store.collection("cards")
                         .whereEqualTo("owner", user.uid)
                         .get()
                         .defer()
+                        .await()
                 val accounts = store.collection("accounts")
                         .whereEqualTo("owner", user.uid)
                         .get()
                         .defer()
-                loadAccounts(accounts.await())
-                if (loadCards(cards.await()) == 0) {
+                        .await()
+                loadAccounts(accounts)
+                if (loadCards(cards) == 0) {
                     CardEditActivity.start(this, Card.initial(), REQUEST_CARD)
+                } else {
+                    adapter.notifyDataSetChanged()
                 }
             }
         }
@@ -157,7 +160,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
@@ -234,21 +236,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         private inner class ViewFactory(parent: ViewGroup) {
             val root: View = layoutInflater.inflate(R.layout.view_my_card, parent, false)
-            private val headerCard = root.findViewById<CardView>(R.id.header_card)
-            private val nameText = root.findViewById<TextView>(R.id.name_text)
-            private val phoneticText = root.findViewById<TextView>(R.id.phonetic_text)
-            private val descriptionText = root.findViewById<TextView>(R.id.description_text)
-            private val addressText = root.findViewById<TextView>(R.id.address_text)
-            private val partnerList = root.findViewById<ListView>(R.id.partner_list)
+            private val headerCard: SquareCardView = root.findViewById(R.id.header_card)
+            private val partnerList: ListView = root.findViewById(R.id.partner_list)
 
             fun update(card: Card) {
-                //todo cardの内容を表示
+                headerCard.update(card)
+                partnerList.adapter = PartnerAdapter(card.partners)
             }
         }
 
-        private inner class PartnerAdapter : BaseAdapter() {
+        private inner class PartnerAdapter(partners: List<Card>) : BaseAdapter() {
 
-            private val items = ArrayList<Card>()
+            private val items = ArrayList<Card>().apply {
+                addAll(partners)
+            }
 
             override fun getItem(position: Int): Any = items[position]
             override fun getItemId(position: Int): Long = position.toLong()
@@ -264,14 +265,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             private inner class PartnerViewHolder(view: View) {
-                private val imageView by lazy { view.findViewById<ImageView>(R.id.partner_icon) }
-                private val nameText by lazy { view.findViewById<TextView>(R.id.partner_name_text) }
-                private val phneticText by lazy { view.findViewById<TextView>(R.id.partner_phonetic_text) }
+                private val imageView: ImageView = view.findViewById(R.id.partner_icon)
+                private val nameText: TextView = view.findViewById(R.id.partner_name_text)
+                private val firstNameText: TextView = view.findViewById(R.id.partner_first_name_text)
+                private val familyNameText: TextView = view.findViewById(R.id.partner_family_name_text)
 
                 fun update(card: Card) {
-                    // todo cardの内容を表示
+                    imageView.loadUrl(card.coverImageUrl)
+                    nameText.text = card.name
+                    firstNameText.text = card.firstName
+                    familyNameText.text = card.familyName
                 }
             }
         }
+    }
+
+    private fun ImageView.loadUrl(url: String) {
+        GlideApp.with(context)
+                .load(url)
+                .centerCrop()
+                .dontAnimate()
+                .into(this)
     }
 }

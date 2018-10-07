@@ -27,7 +27,7 @@
                 />
         <TextView
                 style="@style/ShadowedText"
-                android:id="@+id/card_introduce_text"
+                android:id="@+id/card_introduction_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
@@ -64,15 +64,36 @@
                     android:gravity="center_horizontal"
                     tools:text="氏名"
                     />
-            <TextView
-                    style="@style/ShadowedPhoneticText"
-                    android:id="@+id/card_phonetic_text"
+            <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:gravity="center_horizontal"
-                    tools:text="Furigana"
-                    />
+                    >
+                <TextView
+                        style="@style/ShadowedPhoneticText"
+                        android:id="@+id/card_first_name_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="2pt"
+                        android:layout_marginEnd="2pt"
+                        android:gravity="center_horizontal"
+                        tools:text="First"
+                        />
+                <TextView
+                        style="@style/ShadowedPhoneticText"
+                        android:id="@+id/card_family_name_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="2pt"
+                        android:layout_marginEnd="2pt"
+                        android:gravity="center_horizontal"
+                        tools:text="Family"
+                        />
+            </LinearLayout>
         </LinearLayout>
     </com.abplus.cardsquare.views.SquareLayout>
 </androidx.cardview.widget.CardView>
