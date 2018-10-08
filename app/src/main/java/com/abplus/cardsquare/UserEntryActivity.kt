@@ -11,12 +11,12 @@ import com.abplus.cardsquare.entities.User
 import com.abplus.cardsquare.utils.LogUtil
 import com.abplus.cardsquare.utils.defer
 import com.abplus.cardsquare.utils.launchFB
+import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.auth.api.Auth
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -41,6 +41,20 @@ class UserEntryActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFaile
 
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     private val store: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
+    private val client: GoogleApiClient by lazy {
+        GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
+                .let {
+                    GoogleApiClient
+                            .Builder(this)
+                            .enableAutoManage(this, this)
+                            .addApi(Auth.GOOGLE_SIGN_IN_API, it)
+                            .build()
+                }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,49 +79,42 @@ class UserEntryActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFaile
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_SIGN_IN && resultCode == Activity.RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                val account = task.getResult(ApiException::class.java)
-                firebaseAuthWithGoogle(account)
-            } catch (e: ApiException) {
-                LogUtil.e(e.localizedMessage)
+        if (requestCode == REQUEST_SIGN_IN) {
+            val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
+            if (result.isSuccess) {
+                firebaseAuthWithGoogle(result.signInAccount)
+            } else {
+                val message = CommonStatusCodes.getStatusCodeString(result.status.statusCode)
+                LogUtil.e("Sign-in error: $message")
+                Snackbar.make(rootView, R.string.err_cannot_login, Snackbar.LENGTH_SHORT).show()
             }
         }
     }
 
     override fun onConnectionFailed(connectionResult: ConnectionResult) {
         Toast.makeText(this, connectionResult.errorMessage, Toast.LENGTH_SHORT).show()
-        LogUtil.e("Sign in failed: " + connectionResult.errorMessage)
+        LogUtil.e("Google Sign in failed: " + connectionResult.errorMessage)
     }
 
     private fun signIn() {
-        val options = GoogleSignInOptions
-                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.google_client_id))
-                .requestEmail()
-                .requestProfile()
-                .build()
-        val client = GoogleApiClient
-                .Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, options)
-                .build()
         val intent = Auth.GoogleSignInApi.getSignInIntent(client)
         startActivityForResult(intent, REQUEST_SIGN_IN)
     }
 
-    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
-        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-        auth.signInWithCredential(credential).addOnCompleteListener(this) { task ->
-            val user = if (task.isSuccessful) {
-                auth.currentUser
-            } else {
-                Snackbar.make(rootView, R.string.err_cannot_login, Snackbar.LENGTH_SHORT).show()
-                null
-            }
-            if (user != null) {
-                loggedIn(user)
+    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount?) {
+        if (account != null) {
+            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+            auth.signInWithCredential(credential).addOnCompleteListener(this) { task ->
+                val user = if (task.isSuccessful) {
+                    auth.currentUser
+                } else {
+                    LogUtil.e("Firebase Sign-in faild: " + task.exception?.message)
+                    Snackbar.make(rootView, R.string.err_cannot_login, Snackbar.LENGTH_SHORT).show()
+                    null
+                }
+                if (user != null) {
+                    loggedIn(user)
+                }
             }
         }
     }
@@ -128,8 +135,9 @@ class UserEntryActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFaile
                     .defer()
                     .await()
             val account = if (task.isSuccessful) {
-                val ref = task.result
-                Account.google(ref.id, uid, name, email)
+                task.result?.let { ref ->
+                    Account.google(ref.id, uid, name, email)
+                }
             } else {
                 null
             }

@@ -35,7 +35,7 @@ fun launchFB(dialog: Dialog, proc: suspend ()->Unit) {
 
 fun <T, R> Task<T>.onSuccess(proc: (T)->R): R? {
     return if (isSuccessful) {
-        proc(result)
+        result?.let(proc)
     } else {
         null
     }
