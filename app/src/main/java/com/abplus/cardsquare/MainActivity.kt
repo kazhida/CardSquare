@@ -19,15 +19,11 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
-import com.abplus.cardsquare.entities.Account
 import com.abplus.cardsquare.entities.Card
+import com.abplus.cardsquare.domains.UserDomain
 import com.abplus.cardsquare.entities.User
 import com.abplus.cardsquare.utils.*
 import com.abplus.cardsquare.views.SquareCardView
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -40,9 +36,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val drawerLayout by lazy { findViewById<DrawerLayout>(R.id.drawer_layout) }
     private val navView by lazy { findViewById<NavigationView>(R.id.nav_view) }
 
-    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
-    private val store: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
     private val adapter: CardPagerAdapter by lazy { CardPagerAdapter() }
+    private val userDomain: UserDomain by lazy { UserDomain() }
+    private var currentUser: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,97 +55,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
 
-        val user = auth.currentUser
-        if (user == null) {
-            UserEntryActivity.start(this, REQUEST_ENTRY)
-        } else {
-            launchFB(LoadingDialog.show(this)) {
-                val cards = store.collection("cards")
-                        .whereEqualTo("owner", user.uid)
-                        .get()
-                        .defer()
-                        .await()
-                val accounts = store.collection("accounts")
-                        .whereEqualTo("owner", user.uid)
-                        .get()
-                        .defer()
-                        .await()
-                loadAccounts(accounts)
-                if (loadCards(cards) == 0) {
-                    CardEditActivity.start(this, Card.initial(), REQUEST_CARD)
-                } else {
-                    adapter.notifyDataSetChanged()
-                }
-            }
-        }
-    }
-
-    private fun loadCards(task: Task<QuerySnapshot>): Int = task.onSuccess { result ->
-        result.mapNotNull { document ->
-            val uid: String? = document.getString("uid")
-            if (uid == User.userId) {
-                Card(
-                        refId = document.refId,
-                        uid = uid,
-                        name = document.getStringOrEmpty("name"),
-                        firstName = document.getStringOrEmpty("firstName"),
-                        familyName = document.getStringOrEmpty("familyName"),
-                        coverImageUrl = document.getStringOrEmpty("coverImageUrl"),
-                        introduction = document.getStringOrEmpty("introduction"),
-                        description = document.getStringOrEmpty("description")
-                )
+        launchFB {
+            currentUser = userDomain.currentUser().await()
+            if (currentUser == null) {
+                UserEntryActivity.start(this, REQUEST_ENTRY)
             } else {
-                null
-            }
-        }.let {
-            User.resetCards(it)
-            adapter.notifyDataSetChanged()
-            it.size
-        }
-    } ?: 0
-
-    private fun loadAccounts(task: Task<QuerySnapshot>): Int {
-        return task.onSuccess { result ->
-            result.mapNotNull { document ->
-                val refId: String = document.reference.id
-                val id: String? = document.getString("id")
-                val type: String? = document.getString("type")
-                if (id != null && type != null) {
-                    when (type) {
-                        Account.GOOGLE -> Account.google(
-                                refId = refId,
-                                uid = document.getStringOrEmpty("uid"),
-                                name = document.getStringOrEmpty("name"),
-                                email = document.getStringOrEmpty("email")
-                        )
-                        Account.TWITTER -> Account.twitter(
-                                refId = refId,
-                                uid = document.getStringOrEmpty("uid"),
-                                name = document.getStringOrEmpty("name"),
-                                id = document.getLongOrZero("id"),
-                                idAsString = document.getStringOrEmpty("name")
-                        )
-                        Account.FACEBOOK -> Account.facebook(
-                                refId = refId,
-                                uid = document.getStringOrEmpty("uid"),
-                                name = document.getStringOrEmpty("name")
-                        )
-                        Account.GITHUB -> Account.github(
-                                refId = refId,
-                                uid = document.getStringOrEmpty("uid"),
-                                name = document.getStringOrEmpty("name")
-                        )
-                        else -> null
+                currentUser?.let {  user ->
+                    if (user.cards.isEmpty()) {
+                        launchFB {
+                            CardEditActivity.start(this, userDomain.initialCard(), REQUEST_CARD)
+                        }
+                    } else {
+                        adapter.notifyDataSetChanged()
                     }
-                } else {
-                    null
                 }
-            }.let {
-                User.resetAccounts(it)
-                it.size
             }
-        } ?: 0
+        }
     }
+
 
     override fun onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -206,7 +129,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private inner class CardPagerAdapter : PagerAdapter(), ViewPager.OnPageChangeListener {
 
-        private val items: List<Card> get() = User.cards
+        private val dummies = ArrayList<Card>()
+        private val items: List<Card> get() = currentUser?.cards ?: dummies
 
         override fun isViewFromObject(view: View, obj: Any): Boolean = view === obj
         override fun getCount(): Int = items.size

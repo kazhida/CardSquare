@@ -1,6 +1,9 @@
 package com.abplus.cardsquare.entities
 
-import com.abplus.cardsquare.utils.RandomImages
+import com.abplus.cardsquare.utils.asyncFB
+import com.abplus.cardsquare.utils.defer
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.experimental.Deferred
 import org.parceler.Parcel
 
 /**
@@ -8,45 +11,94 @@ import org.parceler.Parcel
  */
 @Parcel
 data class Card(
-        val refId: String,
-        val uid: String,
-        val name: String,
-        val firstName: String,
-        val familyName: String,
-        val coverImageUrl: String,
-        val introduction: String,
-        val description: String,
+        val refId: String = "",
+        val userId: String = "",
+        val title: String = "",
+        val name: String = "",
+        val firstName: String = "",
+        val familyName: String = "",
+        val coverImageUrl: String = "",
+        val introduction: String = "",
+        val description: String = "",
         val accounts: List<Account> = ArrayList(),
         val partners: List<Card> = ArrayList()
 ) {
-    // for parceler
-    @Suppress("unused")
-    private constructor() : this(
-            refId = "",
-            uid = "",
-            name = "",
-            firstName = "",
-            familyName = "",
-            coverImageUrl = "",
-            introduction = "",
-            description = "",
-            accounts = ArrayList<Account>(),
-            partners = ArrayList<Card>()
-    )
-
     companion object {
-        // 最初の一枚を作る時に使用するカード
-        fun initial(): Card = Card(
-                refId = "",
-                uid = User.userId,
-                name = User.defaultName,
-                firstName = "John/Jane",
-                familyName = "Doe",
-                coverImageUrl = RandomImages.nextAssetImageUrl(),
-                introduction = "ここでは、自己紹介文などを記入します。\nカードの右上に表示されます。",
-                description = "ここには、なにを記入してもかまいません。\nカードの右下に表示されます。\nこのサービスでは住所は登録で来るようになっていないので、\n住所を明かす必要がある場合は、ここを使用してください。",
-                accounts = User.accounts,
-                partners = ArrayList()
-        )
+        private const val CARDS = "CARDS"
+    }
+
+    interface Repository {
+
+        suspend fun findCards(userId: String): Deferred<List<Card>>
+
+        suspend fun add(
+                userId: String,
+                title: String,
+                name: String,
+                firstName: String,
+                familyName: String,
+                coverImageUrl: String,
+                introduction: String,
+                description: String,
+                accounts: List<Account> = ArrayList(),
+                partners: List<Card> = ArrayList()
+        ): Deferred<Card?>
+
+        class Firebase : Repository {
+
+            private val store: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
+
+            override suspend fun findCards(userId: String): Deferred<List<Card>> {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override suspend fun add(
+                    userId: String,
+                    title: String,
+                    name: String,
+                    firstName: String,
+                    familyName: String,
+                    coverImageUrl: String,
+                    introduction: String,
+                    description: String,
+                    accounts: List<Account>,
+                    partners: List<Card>
+            ): Deferred<Card?> = asyncFB {
+                val data = mapOf(
+                        "userId" to userId,
+                        "title" to title,
+                        "name" to name,
+                        "firstName" to firstName,
+                        "familyName" to familyName,
+                        "coverImageUrl" to coverImageUrl,
+                        "introduction" to introduction,
+                        "description" to description,
+                        "accounts" to accounts,
+                        "partners" to partners
+                )
+                val task = store.collection(CARDS)
+                        .add(data)
+                        .defer()
+                        .await()
+                if (task.isSuccessful) {
+                    task.result?.let { ref ->
+                        Card(
+                                refId = ref.id,
+                                userId = userId,
+                                title = title,
+                                name = name,
+                                firstName = firstName,
+                                familyName = familyName,
+                                coverImageUrl = coverImageUrl,
+                                introduction = introduction,
+                                description = description
+                        )
+                    }
+                } else {
+                    null
+                }
+
+            }
+        }
     }
 }

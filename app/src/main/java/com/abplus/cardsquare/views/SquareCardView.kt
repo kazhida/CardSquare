@@ -25,13 +25,13 @@ class SquareCardView : CardView {
         inflater.inflate(R.layout.view_square_card, this)
     }
 
-    val coverImage: ImageView           by lazy { findViewById<ImageView>(R.id.card_cover_image) }
+    private val coverImage: ImageView           by lazy { findViewById<ImageView>(R.id.card_cover_image) }
     val nameText: TextView              by lazy { findViewById<TextView>(R.id.card_name_text) }
     val firstNameText: TextView         by lazy { findViewById<TextView>(R.id.card_first_name_text) }
     val familyNameText: TextView        by lazy { findViewById<TextView>(R.id.card_family_name_text) }
     val introductionText: TextView      by lazy { findViewById<TextView>(R.id.card_introduction_text) }
     val descriptionText: TextView       by lazy { findViewById<TextView>(R.id.card_description_text) }
-    val accountContainer: LinearLayout  by lazy { findViewById<LinearLayout>(R.id.card_account_container) }
+    private val accountContainer: LinearLayout  by lazy { findViewById<LinearLayout>(R.id.card_account_container) }
 
     private var latestImageUrl: String = ""
 
@@ -60,11 +60,11 @@ class SquareCardView : CardView {
         }
     }
 
-    private fun accountView(parent: ViewGroup, account: Account): ImageView? = when (account.type) {
-        Account.Type.Google -> R.drawable.ic_sns_google_white
-        Account.Type.Twitter -> R.drawable.ic_sns_twitter_white
-        Account.Type.Facebook -> R.drawable.ic_sns_facebook_white
-        Account.Type.GitHub -> R.drawable.ic_sns_github_white
+    private fun accountView(parent: ViewGroup, account: Account): ImageView? = when (account.provider) {
+        Account.AuthProvider.Google -> R.drawable.ic_sns_google_white
+        Account.AuthProvider.Twitter -> R.drawable.ic_sns_twitter_white
+        Account.AuthProvider.Facebook -> R.drawable.ic_sns_facebook_white
+        Account.AuthProvider.GitHub -> R.drawable.ic_sns_github_white
         else -> null
     }?.let { iconId ->
         val icon = LayoutInflater.from(context).inflate(R.layout.icon_account, parent, false)
@@ -128,7 +128,7 @@ class SquareCardView : CardView {
     fun createCard(refId: String, partners: List<Card>): Card {
         return Card(
                 refId = refId,
-                uid = "",
+                userId = "",
                 name = "",
                 firstName = "",
                 familyName = "",

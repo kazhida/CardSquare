@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.abplus.cardsquare.entities.Account
 import com.abplus.cardsquare.entities.Card
-import com.abplus.cardsquare.entities.User
 import com.abplus.cardsquare.views.SquareCardView
 import com.google.android.material.textfield.TextInputEditText
 import org.parceler.Parcels
@@ -42,7 +41,7 @@ class CardEditActivity : AppCompatActivity() {
     private val accountContainer: LinearLayout      by lazy { findViewById<LinearLayout>(R.id.account_container) }
 
     private val card: Card by lazy { Parcels.unwrap<Card>(intent.getParcelableExtra(CARD)) }
-    private val isInitial: Boolean get() = card.uid.isEmpty()
+    private val isInitial: Boolean get() = card.refId.isEmpty()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +82,7 @@ class CardEditActivity : AppCompatActivity() {
 
         squareCard.update(card)
 
-        User.accounts.mapNotNull {
+        card.accounts.mapNotNull {
             accountView(it)
         }.forEach {
             accountContainer.addView(it)
