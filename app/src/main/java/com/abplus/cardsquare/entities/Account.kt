@@ -2,6 +2,7 @@ package com.abplus.cardsquare.entities
 
 import android.content.Context
 import android.content.Intent
+import android.os.Parcelable
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import com.abplus.cardsquare.R
@@ -15,14 +16,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.experimental.Deferred
-import org.parceler.Parcel
 import java.lang.Exception
 
 /**
  * カードに付加するSNSなどのアカウントのエンティティ
  */
-@Parcel
+@Parcelize
 data class Account(
         val refId: String = "",
         val userRef: String = "",
@@ -31,7 +32,7 @@ data class Account(
         val email: String = "",
         val id: Long = 0,
         val idAsString: String = ""
-) {
+) : Parcelable {
     enum class AuthProvider {
         Unknown,
         Google,

@@ -1,15 +1,16 @@
 package com.abplus.cardsquare.entities
 
+import android.os.Parcelable
 import com.abplus.cardsquare.utils.asyncFB
 import com.abplus.cardsquare.utils.defer
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.experimental.Deferred
-import org.parceler.Parcel
 
 /**
  * カード
  */
-@Parcel
+@Parcelize
 data class Card(
         val refId: String = "",
         val userId: String = "",
@@ -22,7 +23,7 @@ data class Card(
         val description: String = "",
         val accounts: List<Account> = ArrayList(),
         val partners: List<Card> = ArrayList()
-) {
+) : Parcelable {
     companion object {
         private const val CARDS = "CARDS"
     }
