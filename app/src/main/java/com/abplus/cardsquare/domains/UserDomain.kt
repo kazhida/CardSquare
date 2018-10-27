@@ -1,6 +1,5 @@
 package com.abplus.cardsquare.domains
 
-import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import com.abplus.cardsquare.entities.Account
@@ -58,20 +57,4 @@ class UserDomain(
                 partners = ArrayList()
         )
     }
-
-//    private suspend fun Card.Repository.add(src: Card): Deferred<Card?> {
-//
-//        return cardRepository.add(
-//                userId = src.userId,
-//                title = src.title,
-//                name = src.name,
-//                firstName = src.firstName,
-//                familyName = src.familyName,
-//                coverImageUrl = src.coverImageUrl,
-//                introduction = src.introduction,
-//                description = src.description
-//        )
-//    }
-
-
 }

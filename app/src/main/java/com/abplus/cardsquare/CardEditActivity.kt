@@ -39,7 +39,7 @@ class CardEditActivity : AppCompatActivity() {
     private val descriptionEdit: TextInputEditText  by lazy { findViewById<TextInputEditText>(R.id.description_edit) }
     private val accountContainer: LinearLayout      by lazy { findViewById<LinearLayout>(R.id.account_container) }
 
-    private val card: Card by lazy { intent.getParcelableExtra(CARD) }
+    private val card: Card by lazy { intent.getParcelableExtra<Card>(CARD) }
     private val isInitial: Boolean get() = card.refId.isEmpty()
 
     override fun onCreate(savedInstanceState: Bundle?) {
