@@ -1,0 +1,33 @@
+@startuml
+
+package domain {
+    package models {
+
+        class Card {
+                refId: String
+                userId: String
+                title: String
+                name: String
+                firstName: String
+                familyName: String
+                coverImageUrl: String
+                introduction: String
+                description: String
+                accounts: List<Account>
+                partners: List<Card>
+        }
+
+        interface Card.Repository {
+        }
+
+        Card - Card.Repository
+
+    }
+
+    package usecases {
+
+    }
+}
+
+
+@enduml

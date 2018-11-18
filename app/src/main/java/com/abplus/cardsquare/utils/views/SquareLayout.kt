@@ -1,4 +1,4 @@
-package com.abplus.cardsquare.views
+package com.abplus.cardsquare.utils.views
 
 import android.content.Context
 import androidx.constraintlayout.widget.ConstraintLayout

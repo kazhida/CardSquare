@@ -1,4 +1,4 @@
-package com.abplus.cardsquare
+package com.abplus.cardsquare.ui.cardedit
 
 import android.app.Activity
 import android.content.Intent
@@ -10,9 +10,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.abplus.cardsquare.entities.Account
-import com.abplus.cardsquare.entities.Card
-import com.abplus.cardsquare.views.SquareCardView
+import com.abplus.cardsquare.R
+import com.abplus.cardsquare.domain.models.Account
+import com.abplus.cardsquare.domain.models.Card
+import com.abplus.cardsquare.utils.views.SquareCardView
 import com.google.android.material.textfield.TextInputEditText
 
 class CardEditActivity : AppCompatActivity() {

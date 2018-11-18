@@ -5,14 +5,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 >
-    <com.abplus.cardsquare.views.SquareCardView
+    <com.abplus.cardsquare.utils.views.SquareCardView
             android:id="@+id/header_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="0dp"
             android:elevation="6dp"
             >
-    </com.abplus.cardsquare.views.SquareCardView>
+    </com.abplus.cardsquare.utils.views.SquareCardView>
     <ListView
             android:id="@+id/partner_list"
             android:layout_width="match_parent"

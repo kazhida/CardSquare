@@ -1,4 +1,4 @@
-package com.abplus.cardsquare.views
+package com.abplus.cardsquare.utils.views
 
 import android.content.Context
 import android.util.AttributeSet
@@ -10,8 +10,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.abplus.cardsquare.R
-import com.abplus.cardsquare.entities.Account
-import com.abplus.cardsquare.entities.Card
+import com.abplus.cardsquare.domain.models.Account
+import com.abplus.cardsquare.domain.models.Card
 import com.abplus.cardsquare.utils.GlideApp
 
 class SquareCardView : CardView {
@@ -61,10 +61,10 @@ class SquareCardView : CardView {
     }
 
     private fun accountView(parent: ViewGroup, account: Account): ImageView? = when (account.provider) {
-        Account.AuthProvider.Google -> R.drawable.ic_sns_google_white
-        Account.AuthProvider.Twitter -> R.drawable.ic_sns_twitter_white
-        Account.AuthProvider.Facebook -> R.drawable.ic_sns_facebook_white
-        Account.AuthProvider.GitHub -> R.drawable.ic_sns_github_white
+        "google" -> R.drawable.ic_sns_google_white
+        "twitter" -> R.drawable.ic_sns_twitter_white
+        "facebook" -> R.drawable.ic_sns_facebook_white
+        "github" -> R.drawable.ic_sns_github_white
         else -> null
     }?.let { iconId ->
         val icon = LayoutInflater.from(context).inflate(R.layout.icon_account, parent, false)
@@ -79,7 +79,7 @@ class SquareCardView : CardView {
             val v = accountContainer.getChildAt(i)
             val a = v.tag
             if (a is Account) {
-                if (a.refId == account.refId) {
+                if (a.uid == account.uid) {
                     return true
                 }
             }
@@ -98,7 +98,7 @@ class SquareCardView : CardView {
             val v = accountContainer.getChildAt(i)
             val a = v.tag
             if (a is Account) {
-                if (a.refId == account.refId) {
+                if (a.uid == account.uid) {
                     accountContainer.removeView(v)
                 }
             }

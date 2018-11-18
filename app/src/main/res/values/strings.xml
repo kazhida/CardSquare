@@ -41,5 +41,7 @@
         "カードに関連づけるアカウントを選択します。\n"
         "タップすることで、トグル状に変更されます。"
     </string>
+    <string name="title_activity_card_list">CardListActivity</string>
+    <string name="title_activity_card_detail">CardDetailActivity</string>
 
 </resources>

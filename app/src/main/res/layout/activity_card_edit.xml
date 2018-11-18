@@ -23,7 +23,7 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:contentScrim="?attr/colorPrimary">
 
-            <com.abplus.cardsquare.views.SquareCardView
+            <com.abplus.cardsquare.utils.views.SquareCardView
                     android:id="@+id/square_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -156,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/colorPrimary"
                     android:padding="16dp"
-                    android:text="@string/tutorial_card_edit"
+                    android:text="@string/tutorial_card_account"
                     android:textColor="@color/textColorPrimary"
                     android:textSize="@dimen/fs_large"
                     android:lineSpacingExtra="1pt"

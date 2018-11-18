@@ -35,13 +35,13 @@
                     android:textColor="@color/textColorPrimary"
                     />
 
-            <!--<androidx.appcompat.widget.Toolbar-->
-                    <!--android:id="@+id/toolbar"-->
-                    <!--android:layout_height="?attr/actionBarSize"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_gravity="top"-->
-                    <!--app:layout_collapseMode="pin"-->
-                    <!--app:popupTheme="@style/AppTheme.PopupOverlay"/>-->
+            <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="top"
+                    app:layout_collapseMode="pin"
+                    app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
