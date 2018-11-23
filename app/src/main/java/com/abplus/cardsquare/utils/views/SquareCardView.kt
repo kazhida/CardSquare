@@ -7,7 +7,6 @@ import androidx.cardview.widget.CardView
 import androidx.databinding.DataBindingUtil
 import com.abplus.cardsquare.R
 import com.abplus.cardsquare.databinding.ViewSquareCardBinding
-import com.abplus.cardsquare.utils.LogUtil
 
 
 class SquareCardView : CardView {
@@ -21,7 +20,6 @@ class SquareCardView : CardView {
     init {
         val inflater = LayoutInflater.from(context.applicationContext)
         binding = DataBindingUtil.inflate(inflater, R.layout.view_square_card, this, true)
-        LogUtil.d(binding.toString())
     }
 
     fun resetViewModel(viewModel: SquareCardViewModel) {
