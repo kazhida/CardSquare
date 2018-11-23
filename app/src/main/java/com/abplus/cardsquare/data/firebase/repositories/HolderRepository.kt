@@ -20,7 +20,7 @@ class HolderRepository : FirebaseRepository(), Holder.Repository {
     }
 
     private val accountRepository = AccountRepository()
-    private val cardRepository = CardRepository()
+    //private val cardRepository = CardRepository()
 
     override val current: Deferred<Holder?> get() {
         val uid = auth.currentUser?.uid
@@ -41,7 +41,7 @@ class HolderRepository : FirebaseRepository(), Holder.Repository {
                 .firstOrNull()?.let {
                     val data = it.toObject(HolderData::class.java)
                     if (data is HolderData) {
-                        val accounts = accountRepository.find(data.accounts).await()
+                        val accounts = accountRepository.findByUids(data.accounts).await()
                         Holder(
                                 refId = it.refId,
                                 defaultName = data.defaultName,

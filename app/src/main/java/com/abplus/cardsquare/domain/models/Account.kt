@@ -19,8 +19,9 @@ data class Account(
 ) : Parcelable {
 
     interface Repository {
-        fun find(uid: String): Deferred<Account?>
-        fun find(uids: List<String>): Deferred<Map<String, Account>>
+        fun findByUid(uid: String): Deferred<Account?>
+        fun findByUids(uids: List<String>): Deferred<Map<String, Account>>
+        fun find(refId: String): Deferred<Account?>
         fun saved(data: Intent?): Deferred<String>
     }
 

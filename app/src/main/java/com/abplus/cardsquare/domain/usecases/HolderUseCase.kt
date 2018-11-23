@@ -36,8 +36,8 @@ class HolderUseCase private constructor(
     }
 
     fun onActivityResult(data: Intent?): Deferred<Holder?> = GlobalScope.async {
-        val uid = accountRepository.saved(data).await()
-        val account = accountRepository.find(uid).await()
+        val refId = accountRepository.saved(data).await()
+        val account = accountRepository.find(refId).await()
         if (account != null) {
             holderRepository.create(account).await()
         } else {

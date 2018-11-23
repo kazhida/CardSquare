@@ -18,7 +18,22 @@ class AccountRepository : FirebaseRepository(), Account.Repository {
         private const val ACCOUNTS = "ACCOUNTS"
     }
 
-    override fun find(uid: String): Deferred<Account?> = GlobalScope.async {
+    override fun find(refId: String): Deferred<Account?> = GlobalScope.async {
+        store.collection(ACCOUNTS)
+                .document(refId)
+                .get()
+                .defer()
+                .await()
+                .result?.let {
+                    Account(
+                            uid = it.getStringOrEmpty("uid"),
+                            provider = it.getStringOrEmpty("provider"),
+                            name = it.getStringOrEmpty("handleName")
+                    )
+                }
+    }
+
+    override fun findByUid(uid: String): Deferred<Account?> = GlobalScope.async {
         store.collection(ACCOUNTS)
                 .whereEqualTo("uid", uid)
                 .defer()
@@ -33,7 +48,7 @@ class AccountRepository : FirebaseRepository(), Account.Repository {
                 }
     }
 
-    override fun find(uids: List<String>): Deferred<Map<String, Account>> = GlobalScope.async {
+    override fun findByUids(uids: List<String>): Deferred<Map<String, Account>> = GlobalScope.async {
         HashMap<String, Account>().apply {
             uids.forEach {
                 uid -> find(uid).await()?.let {
@@ -50,7 +65,9 @@ class AccountRepository : FirebaseRepository(), Account.Repository {
             if (account != null) {
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
                 val task = auth.signInWithCredential(credential).defer().await()
-                task.result?.user?.addAccount() ?: ""
+                task.result?.user?.let {
+                    it.getAccount() ?: it.addAccount()
+                } ?: throw Exception("account cannot add")
             } else {
                 throw Exception("account not found")
             }
@@ -59,13 +76,19 @@ class AccountRepository : FirebaseRepository(), Account.Repository {
         }
     }
 
-    private suspend fun FirebaseUser.addAccount(): String {
+    private suspend fun FirebaseUser.getAccount(): String? = store.collection(ACCOUNTS)
+            .whereEqualTo("uid", uid)
+            .defer()
+            .await()
+            .documents
+            .firstOrNull()?.id
+
+    private suspend fun FirebaseUser.addAccount(): String? {
         val data = mapOf(
                 "uid" to uid,
                 "provider" to providerId,
                 "handleName" to displayName
         )
-        store.collection(ACCOUNTS).add(data).defer().await()
-        return uid
+        return store.collection(ACCOUNTS).add(data).defer().await().result?.id
     }
 }
