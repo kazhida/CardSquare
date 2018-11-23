@@ -140,7 +140,7 @@ abstract class FirebaseRepository {
 //            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //        }
 //
-//        override fun add(card: Card): HolderData {
+//        override fun add(cardViewModel: Card): HolderData {
 //            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //        }
 //

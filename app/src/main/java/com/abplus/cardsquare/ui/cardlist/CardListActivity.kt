@@ -141,7 +141,7 @@ class CardListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             private val partnerList: ListView = root.findViewById(R.id.partner_list)
 
             fun update(card: Card) {
-                //headerCard.update(card)
+                //headerCard.update(cardViewModel)
                 partnerList.adapter = PartnerAdapter(card.partners)
             }
         }

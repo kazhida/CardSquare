@@ -27,7 +27,7 @@ class UserEntryActivity : AppCompatActivity() {
     private val rootView: View  by lazy { findViewById<View>(R.id.root_view) }
     private val loginButton: View by lazy { findViewById<View>(R.id.google_login) }
 
-    private val holderUseCase: HolderUseCase by lazy { HolderUseCase() }
+    private val holderUseCase: HolderUseCase by lazy { HolderUseCase.firebaseInstance() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +75,7 @@ class UserEntryActivity : AppCompatActivity() {
     private fun signIn() {
         holderUseCase.signIn(this, REQUEST_SIGN_IN) { errorMessage ->
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
-            LogUtil.e("Google Sign in failed: " + errorMessage)
+            LogUtil.e("Google Sign in failed: $errorMessage")
         }
     }
 }

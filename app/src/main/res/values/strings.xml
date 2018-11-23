@@ -23,7 +23,7 @@
     <string name="nav_accounts">アカウント管理</string>
     <string name="action_edit_card">カードの編集</string>
 
-    <string name="hint_name_edit">氏名を入力</string>
+    <string name="hint_handle_name_edit">ハンドル名を入力</string>
     <string name="hint_first_name_edit">First nameを入力（ローマ字推奨）</string>
     <string name="hint_family_name_edit">Family nameを入力（ローマ字推奨）</string>
     <string name="hint_introduce_edit">自己紹介を入力</string>

@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         launchUI {
-            val useCase = HolderUseCase()
+            val useCase = HolderUseCase.firebaseInstance()
             val holder = useCase.currentHolder.await()
 
             when {

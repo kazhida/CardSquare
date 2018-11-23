@@ -22,6 +22,7 @@ data class Holder(
         putAll(accounts)
     }
 
+    @Suppress("unused")
     private fun List<Card>.append(cards: List<Card>) = ArrayList<Card>().apply {
         addAll(this@append)
         addAll(cards)

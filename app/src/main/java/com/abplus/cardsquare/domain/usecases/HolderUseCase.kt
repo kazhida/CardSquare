@@ -3,26 +3,33 @@ package com.abplus.cardsquare.domain.usecases
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import com.abplus.cardsquare.domain.models.Account
-import com.abplus.cardsquare.domain.models.Card
 import com.abplus.cardsquare.data.firebase.repositories.AccountRepository
-import com.abplus.cardsquare.data.firebase.repositories.CardRepository
 import com.abplus.cardsquare.data.firebase.repositories.HolderRepository
 import com.abplus.cardsquare.domain.models.Holder
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 
-class HolderUseCase(
-        private val accountRepository: Account.Repository = AccountRepository(),
-        private val cardRepository: Card.Repository = CardRepository(),
-        private val holderRepository: Holder.Repository = HolderRepository()
+class HolderUseCase private constructor(
+        private val accountRepository: Account.Repository,
+//        private val cardRepository: Card.Repository,
+        private val holderRepository: Holder.Repository
 ) {
+
+    companion object {
+
+        fun firebaseInstance() = HolderUseCase(
+                AccountRepository(),
+                //CardRepository(),
+                HolderRepository()
+        )
+    }
 
     val currentHolder: Deferred<Holder?> get() = holderRepository.current
 
-    fun loadCards(userId: String): List<Card> = ArrayList<Card>().apply {
-
-    }
+//    fun loadCards(userId: String): List<Card> = ArrayList<Card>().apply {
+//
+//    }
 
     fun signIn(activity: FragmentActivity, requestCode: Int, onFailed: (errorMessage: String)->Unit) {
         holderRepository.signIn(activity, requestCode, onFailed)
@@ -39,9 +46,9 @@ class HolderUseCase(
     }
 
 //
-//    private fun List<Card>.append(card: Card) = ArrayList<Card>().apply {
+//    private fun List<Card>.append(cardViewModel: Card) = ArrayList<Card>().apply {
 //        addAll(this@append)
-//        add(card)
+//        add(cardViewModel)
 //    }
 //
 //    private fun Map<String, Account>.append(account: Account) = HashMap<String, Account>().apply {

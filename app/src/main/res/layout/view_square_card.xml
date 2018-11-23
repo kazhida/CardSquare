@@ -6,7 +6,7 @@
         >
     <data>
         <variable
-                name="squareCardViewModel"
+                name="viewModel"
                 type="com.abplus.cardsquare.utils.views.SquareCardViewModel"/>
     </data>
     <androidx.cardview.widget.CardView
@@ -23,7 +23,7 @@
                     android:layout_height="match_parent"
                     android:contentDescription="@string/cover_imagee"
                     tools:src="@color/colorAccent"
-                    app:imageUrl="@{squareCardViewModel.coverImageUrl}"
+                    app:imageUrl="@{viewModel.coverImageUrl}"
                     />
             <LinearLayout
                     android:id="@+id/card_account_container"
@@ -40,28 +40,28 @@
                         android:layout_width="@dimen/dia_account_icon"
                         android:layout_height="@dimen/dia_account_icon"
                         android:layout_marginEnd="8dp"
-                        android:visibility="@{squareCardViewModel.hasGoogle}"
+                        android:visibility="@{viewModel.visibleHasGoogle}"
                         android:contentDescription="@string/google"/>
                 <ImageView
                         android:src="@drawable/ic_sns_twitter_white"
                         android:layout_width="@dimen/dia_account_icon"
                         android:layout_height="@dimen/dia_account_icon"
                         android:layout_marginEnd="8dp"
-                        android:visibility="@{squareCardViewModel.hasTwitter}"
+                        android:visibility="@{viewModel.visibleHasTwitter}"
                         android:contentDescription="@string/google"/>
                 <ImageView
                         android:src="@drawable/ic_sns_facebook_white"
                         android:layout_width="@dimen/dia_account_icon"
                         android:layout_height="@dimen/dia_account_icon"
                         android:layout_marginEnd="8dp"
-                        android:visibility="@{squareCardViewModel.hasFacebook}"
+                        android:visibility="@{viewModel.visibleHasFacebook}"
                         android:contentDescription="@string/google"/>
                 <ImageView
                         android:src="@drawable/ic_sns_github_white"
                         android:layout_width="@dimen/dia_account_icon"
                         android:layout_height="@dimen/dia_account_icon"
                         android:layout_marginEnd="8dp"
-                        android:visibility="@{squareCardViewModel.hasGitHub}"
+                        android:visibility="@{viewModel.visibleHasGitHub}"
                         android:contentDescription="@string/google"/>
             </LinearLayout>
             <TextView
@@ -74,7 +74,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     android:textSize="@dimen/fs_small"
-                    android:text="@{squareCardViewModel.introduction}"
+                    android:text="@{viewModel.introduction}"
                     tools:text="自己紹介欄\n複数行の説明を入力できる。"
                     />
             <TextView
@@ -87,7 +87,7 @@
                     app:layout_constraintBottom_toTopOf="@id/card_account_container"
                     app:layout_constraintRight_toRightOf="parent"
                     android:textSize="@dimen/fs_small"
-                    android:text="@{squareCardViewModel.description}"
+                    android:text="@{viewModel.description}"
                     tools:text="下からせり上がるタイプの説明文\nこれも、複数行の説明を入力できる。"
                     />
             <LinearLayout
@@ -105,7 +105,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
-                        android:text="@{squareCardViewModel.handleName}"
+                        android:text="@{viewModel.handleName}"
                         tools:text="ハンドル名"
                         />
                 <LinearLayout
@@ -124,7 +124,7 @@
                             android:layout_marginStart="2pt"
                             android:layout_marginEnd="2pt"
                             android:gravity="center_horizontal"
-                            android:text="@{squareCardViewModel.firstName}"
+                            android:text="@{viewModel.firstName}"
                             tools:text="First"
                             />
                     <TextView
@@ -136,7 +136,7 @@
                             android:layout_marginStart="2pt"
                             android:layout_marginEnd="2pt"
                             android:gravity="center_horizontal"
-                            android:text="@{squareCardViewModel.familyName}"
+                            android:text="@{viewModel.familyName}"
                             tools:text="Family"
                             />
                 </LinearLayout>

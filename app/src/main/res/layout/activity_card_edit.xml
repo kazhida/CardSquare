@@ -84,8 +84,9 @@
                             android:id="@+id/name_edit"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/hint_name_edit"
+                            android:hint="@string/hint_handle_name_edit"
                             style="@style/NameText"
+                            android:text="@{viewModel.handleName}"
                             android:maxLines="1"
                             android:inputType="text"
                             />
@@ -104,6 +105,7 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_first_name_edit"
                             style="@style/NameText"
+                            android:text="@{viewModel.firstName}"
                             android:maxLines="1"
                             android:inputType="textPhonetic"
                             />
@@ -122,6 +124,7 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_family_name_edit"
                             style="@style/NameText"
+                            android:text="@{viewModel.familyName}"
                             android:maxLines="1"
                             android:inputType="textPhonetic"
                             />
@@ -140,6 +143,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_introduce_edit"
+                            android:text="@{viewModel.introduction}"
                             style="@style/NameText"
                             android:inputType="textMultiLine"
                             />
@@ -157,6 +161,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_description_edit"
+                            android:text="@{viewModel.description}"
                             style="@style/NameText"
                             android:inputType="textMultiLine"
                             />
