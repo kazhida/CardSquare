@@ -3,16 +3,15 @@ package com.abplus.cardsquare.utils.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.databinding.BindingAdapter
+import androidx.databinding.DataBindingUtil
 import com.abplus.cardsquare.R
-import com.abplus.cardsquare.domain.models.Account
-import com.abplus.cardsquare.domain.models.Card
+import com.abplus.cardsquare.databinding.ViewSquareCardBinding
 import com.abplus.cardsquare.utils.GlideApp
+import com.abplus.cardsquare.utils.LogUtil
+
 
 class SquareCardView : CardView {
 
@@ -20,123 +19,21 @@ class SquareCardView : CardView {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
+    private val binding: ViewSquareCardBinding
+
     init {
         val inflater = LayoutInflater.from(context.applicationContext)
-        inflater.inflate(R.layout.view_square_card, this)
+        binding = DataBindingUtil.inflate(inflater, R.layout.view_square_card, this, true)
+//        inflater.inflate(R.layout.view_square_card, this)
+        LogUtil.d(binding.toString())
     }
 
-    private val coverImage: ImageView           by lazy { findViewById<ImageView>(R.id.card_cover_image) }
-    val nameText: TextView              by lazy { findViewById<TextView>(R.id.card_name_text) }
-    val firstNameText: TextView         by lazy { findViewById<TextView>(R.id.card_first_name_text) }
-    val familyNameText: TextView        by lazy { findViewById<TextView>(R.id.card_family_name_text) }
-    val introductionText: TextView      by lazy { findViewById<TextView>(R.id.card_introduction_text) }
-    val descriptionText: TextView       by lazy { findViewById<TextView>(R.id.card_description_text) }
-    private val accountContainer: LinearLayout  by lazy { findViewById<LinearLayout>(R.id.card_account_container) }
-
-    private var latestImageUrl: String = ""
-
-    fun update(card: Card) {
-        if (card.coverImageUrl != latestImageUrl) {
-            coverImage.loadUrl(card.coverImageUrl)
-            latestImageUrl = card.coverImageUrl
-        }
-
-        nameText.text = card.name
-        firstNameText.text = card.firstName
-        familyNameText.text = card.familyName
-        introductionText.text = card.introduction
-        descriptionText.text = card.description
-
-        if (card.accounts.isNotEmpty()) {
-            accountContainer.removeAllViews()
-            accountContainer.visibility = View.VISIBLE
-            card.accounts.mapNotNull {
-                accountView(accountContainer, it)
-            }.forEach {
-                accountContainer.addView(it)
-            }
-        } else {
-            accountContainer.visibility = View.GONE
-        }
-    }
-
-    private fun accountView(parent: ViewGroup, account: Account): ImageView? = when (account.provider) {
-        "google" -> R.drawable.ic_sns_google_white
-        "twitter" -> R.drawable.ic_sns_twitter_white
-        "facebook" -> R.drawable.ic_sns_facebook_white
-        "github" -> R.drawable.ic_sns_github_white
-        else -> null
-    }?.let { iconId ->
-        val icon = LayoutInflater.from(context).inflate(R.layout.icon_account, parent, false)
-        (icon as? ImageView)?.apply {
-            setImageResource(iconId)
-            tag = account
-        }
-    }
-
-    fun containsAccount(account: Account): Boolean {
-        for (i in 0 until accountContainer.childCount) {
-            val v = accountContainer.getChildAt(i)
-            val a = v.tag
-            if (a is Account) {
-                if (a.uid == account.uid) {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-
-    fun addAccount(account: Account) {
-        if (!containsAccount(account)) {
-            accountContainer.addView(accountView(accountContainer, account))
-        }
-    }
-
-    fun removeAccount(account: Account) {
-        for (i in 0 until accountContainer.childCount) {
-            val v = accountContainer.getChildAt(i)
-            val a = v.tag
-            if (a is Account) {
-                if (a.uid == account.uid) {
-                    accountContainer.removeView(v)
-                }
-            }
-        }
-    }
-
-    private fun ImageView.loadUrl(url: String) {
+    @BindingAdapter("app:imageUrl")
+    fun ImageView.imageUrl(url: String) {
         GlideApp.with(context)
                 .load(url)
                 .centerCrop()
                 .dontAnimate()
                 .into(this)
-    }
-
-    private fun accounts(): List<Account> {
-        return ArrayList<Account>().apply {
-            for (i in 0 until accountContainer.childCount) {
-                val v = accountContainer.getChildAt(i)
-                val a = v.tag
-                if (a is Account) {
-                    add(a)
-                }
-            }
-        }
-    }
-
-    fun createCard(refId: String, partners: List<Card>): Card {
-        return Card(
-                refId = refId,
-                userId = "",
-                name = "",
-                firstName = "",
-                familyName = "",
-                coverImageUrl = "",
-                introduction = "",
-                description = "",
-                accounts = accounts(),
-                partners = partners
-        )
     }
 }

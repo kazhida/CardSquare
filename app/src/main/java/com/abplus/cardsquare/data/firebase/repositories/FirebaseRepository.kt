@@ -83,7 +83,7 @@ abstract class FirebaseRepository {
 //        override suspend fun add(
 //                userId: String,
 //                title: String,
-//                name: String,
+//                handleName: String,
 //                firstName: String,
 //                familyName: String,
 //                coverImageUrl: String,
@@ -95,7 +95,7 @@ abstract class FirebaseRepository {
 //            val data = mapOf(
 //                    "userId" to userId,
 //                    "title" to title,
-//                    "name" to name,
+//                    "handleName" to handleName,
 //                    "firstName" to firstName,
 //                    "familyName" to familyName,
 //                    "coverImageUrl" to coverImageUrl,
@@ -114,7 +114,7 @@ abstract class FirebaseRepository {
 //                            refId = ref.id,
 //                            userId = userId,
 //                            title = title,
-//                            name = name,
+//                            handleName = handleName,
 //                            firstName = firstName,
 //                            familyName = familyName,
 //                            coverImageUrl = coverImageUrl,

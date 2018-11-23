@@ -23,4 +23,12 @@ data class Account(
         fun find(uids: List<String>): Deferred<Map<String, Account>>
         fun saved(data: Intent?): Deferred<String>
     }
+
+    companion object Providers {
+        const val GOOGLE = "google"
+        const val TWITTER = "twitter"
+        const val FACEBOOK = "facebook"
+        const val GITHUB = "github"
+
+    }
 }

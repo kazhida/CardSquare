@@ -1,99 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<layout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="0dp">
-    <com.abplus.cardsquare.utils.views.SquareLayout
+        >
+    <data>
+        <variable
+                name="squareCardViewModel"
+                type="com.abplus.cardsquare.utils.views.SquareCardViewModel"/>
+    </data>
+    <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:padding="0dp">
+        <com.abplus.cardsquare.utils.views.SquareLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <ImageView
-                android:id="@+id/card_cover_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/cover_imagee"
-                tools:src="@color/colorAccent"
-                />
-        <LinearLayout
-                android:id="@+id/card_account_container"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                />
-        <TextView
-                style="@style/ShadowedText"
-                android:id="@+id/card_introduction_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:gravity="end"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                tools:text="自己紹介欄\n複数行の説明を入力できる。"
-                />
-        <TextView
-                style="@style/ShadowedText"
-                android:id="@+id/card_description_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:gravity="end"
-                app:layout_constraintBottom_toTopOf="@id/card_account_container"
-                app:layout_constraintRight_toRightOf="parent"
-                tools:text="下からせり上がるタイプの説明文\nこれも、複数行の説明を入力できる。"
-                />
-        <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent">
-            <TextView
-                    style="@style/ShadowedNameText"
-                    android:id="@+id/card_name_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="center_horizontal"
-                    tools:text="氏名"
+            <ImageView
+                    android:id="@+id/card_cover_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/cover_imagee"
+                    tools:src="@color/colorAccent"
+                    app:imageUrl="@{squareCardViewModel.coverImageUrl}"
                     />
             <LinearLayout
+                    android:id="@+id/card_account_container"
                     android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:gravity="end"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    >
+                <ImageView
+                        android:src="@drawable/ic_sns_google_white"
+                        android:layout_width="@dimen/dia_account_icon"
+                        android:layout_height="@dimen/dia_account_icon"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="@{squareCardViewModel.hasGoogle}"
+                        android:contentDescription="@string/google"/>
+                <ImageView
+                        android:src="@drawable/ic_sns_twitter_white"
+                        android:layout_width="@dimen/dia_account_icon"
+                        android:layout_height="@dimen/dia_account_icon"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="@{squareCardViewModel.hasTwitter}"
+                        android:contentDescription="@string/google"/>
+                <ImageView
+                        android:src="@drawable/ic_sns_facebook_white"
+                        android:layout_width="@dimen/dia_account_icon"
+                        android:layout_height="@dimen/dia_account_icon"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="@{squareCardViewModel.hasFacebook}"
+                        android:contentDescription="@string/google"/>
+                <ImageView
+                        android:src="@drawable/ic_sns_github_white"
+                        android:layout_width="@dimen/dia_account_icon"
+                        android:layout_height="@dimen/dia_account_icon"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="@{squareCardViewModel.hasGitHub}"
+                        android:contentDescription="@string/google"/>
+            </LinearLayout>
+            <TextView
+                    style="@style/ShadowedText"
+                    android:id="@+id/card_introduction_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="center_horizontal"
-                    >
+                    android:layout_margin="16dp"
+                    android:gravity="end"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:textSize="@dimen/fs_small"
+                    android:text="@{squareCardViewModel.introduction}"
+                    tools:text="自己紹介欄\n複数行の説明を入力できる。"
+                    />
+            <TextView
+                    style="@style/ShadowedText"
+                    android:id="@+id/card_description_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:gravity="end"
+                    app:layout_constraintBottom_toTopOf="@id/card_account_container"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:textSize="@dimen/fs_small"
+                    android:text="@{squareCardViewModel.description}"
+                    tools:text="下からせり上がるタイプの説明文\nこれも、複数行の説明を入力できる。"
+                    />
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
                 <TextView
-                        style="@style/ShadowedPhoneticText"
-                        android:id="@+id/card_first_name_text"
+                        style="@style/ShadowedNameText"
+                        android:id="@+id/card_handle_name_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginStart="2pt"
-                        android:layout_marginEnd="2pt"
                         android:gravity="center_horizontal"
-                        tools:text="First"
+                        android:text="@{squareCardViewModel.handleName}"
+                        tools:text="ハンドル名"
                         />
-                <TextView
-                        style="@style/ShadowedPhoneticText"
-                        android:id="@+id/card_family_name_text"
+                <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginStart="2pt"
-                        android:layout_marginEnd="2pt"
                         android:gravity="center_horizontal"
-                        tools:text="Family"
-                        />
+                        >
+                    <TextView
+                            style="@style/ShadowedPhoneticText"
+                            android:id="@+id/card_first_name_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginStart="2pt"
+                            android:layout_marginEnd="2pt"
+                            android:gravity="center_horizontal"
+                            android:text="@{squareCardViewModel.firstName}"
+                            tools:text="First"
+                            />
+                    <TextView
+                            style="@style/ShadowedPhoneticText"
+                            android:id="@+id/card_family_name_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginStart="2pt"
+                            android:layout_marginEnd="2pt"
+                            android:gravity="center_horizontal"
+                            android:text="@{squareCardViewModel.familyName}"
+                            tools:text="Family"
+                            />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-    </com.abplus.cardsquare.utils.views.SquareLayout>
-</androidx.cardview.widget.CardView>
+        </com.abplus.cardsquare.utils.views.SquareLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

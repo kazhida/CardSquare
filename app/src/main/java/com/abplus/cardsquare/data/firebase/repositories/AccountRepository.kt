@@ -28,7 +28,7 @@ class AccountRepository : FirebaseRepository(), Account.Repository {
                     Account(
                             uid = it.getStringOrEmpty("uid"),
                             provider = it.getStringOrEmpty("provider"),
-                            name = it.getStringOrEmpty("name")
+                            name = it.getStringOrEmpty("handleName")
                     )
                 }
     }
@@ -63,7 +63,7 @@ class AccountRepository : FirebaseRepository(), Account.Repository {
         val data = mapOf(
                 "uid" to uid,
                 "provider" to providerId,
-                "name" to displayName
+                "handleName" to displayName
         )
         store.collection(ACCOUNTS).add(data).defer().await()
         return uid

@@ -32,8 +32,7 @@ data class Holder(
     fun initialCard(): Card = Card(
             refId = "",
             userId = refId,
-            title = "1枚目のカード",
-            name = defaultName,
+            handleName = defaultName,
             firstName = "John/Jane",
             familyName = "Doe",
             coverImageUrl = RandomImages.nextAssetImageUrl(),

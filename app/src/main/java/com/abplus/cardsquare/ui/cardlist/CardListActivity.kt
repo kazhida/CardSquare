@@ -141,7 +141,7 @@ class CardListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             private val partnerList: ListView = root.findViewById(R.id.partner_list)
 
             fun update(card: Card) {
-                headerCard.update(card)
+                //headerCard.update(card)
                 partnerList.adapter = PartnerAdapter(card.partners)
             }
         }
@@ -173,7 +173,7 @@ class CardListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
                 fun update(card: Card) {
                     imageView.loadUrl(card.coverImageUrl)
-                    nameText.text = card.name
+                    nameText.text = card.handleName
                     firstNameText.text = card.firstName
                     familyNameText.text = card.familyName
                 }

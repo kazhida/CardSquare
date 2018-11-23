@@ -13,8 +13,7 @@ import kotlinx.coroutines.Deferred
 data class Card(
         val refId: String = "",
         val userId: String = "",
-        val title: String = "",
-        val name: String = "",
+        val handleName: String = "",
         val firstName: String = "",
         val familyName: String = "",
         val coverImageUrl: String = "",
@@ -30,7 +29,7 @@ data class Card(
         fun add(
                 userId: String,
                 title: String,
-                name: String,
+                handleName: String,
                 firstName: String,
                 familyName: String,
                 coverImageUrl: String,
