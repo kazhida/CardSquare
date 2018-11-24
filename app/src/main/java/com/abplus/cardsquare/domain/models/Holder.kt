@@ -37,8 +37,8 @@ data class Holder(
             firstName = "John/Jane",
             familyName = "Doe",
             coverImageUrl = RandomImages.nextAssetImageUrl(),
-            introduction = "ここでは、自己紹介文などを記入します。\nカードの右上に表示されます。",
-            description = "ここには、なにを記入してもかまいません。\nカードの右下に表示されます。\nこのサービスでは住所は登録で来るようになっていないので、\n住所を明かす必要がある場合は、ここを使用してください。",
+            introduction = "ここでは、自己紹介文などを記入します。\nカードの左上に表示されます。",
+            description = "ここには、なにを記入してもかまいません。\nカードの右下に表示されます。\nこのサービスでは住所はあつかっていないので、ここを使用するとよいでしょう。",
             accounts = listOf(accounts.entries.first().value),
             partners = ArrayList()
     )

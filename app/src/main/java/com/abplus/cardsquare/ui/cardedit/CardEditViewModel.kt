@@ -10,24 +10,25 @@ class CardEditViewModel(
         app: Application
 ) : AndroidViewModel(app) {
 
-    private var isFirstCard: Boolean = false
     val handleName = MutableLiveData<String>()
     val firstName = MutableLiveData<String>()
     val familyName = MutableLiveData<String>()
     val coverImageUrl = MutableLiveData<String>()
     val introduction = MutableLiveData<String>()
     val description = MutableLiveData<String>()
+    val visibleAtFirst = MutableLiveData<Int>()
 
     fun reset(card: Card) {
-        isFirstCard = card.refId.isEmpty()
         handleName.value = card.handleName
         firstName.value = card.firstName
         familyName.value = card.familyName
         coverImageUrl.value = card.coverImageUrl
         introduction.value = card.introduction
         description.value = card.description
+        visibleAtFirst.value = if (card.refId.isEmpty()) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
     }
-
-    val visibleAtFirst: Int
-        get() = if (isFirstCard) View.VISIBLE else View.GONE
 }

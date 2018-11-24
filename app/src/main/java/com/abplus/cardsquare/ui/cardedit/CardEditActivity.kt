@@ -13,6 +13,7 @@ import com.abplus.cardsquare.R
 import com.abplus.cardsquare.databinding.ActivityCardEditBinding
 import com.abplus.cardsquare.domain.models.Card
 import com.abplus.cardsquare.ui.common.SquareCardFragment
+import com.abplus.cardsquare.utils.views.FadeoutOffsetChangeListener
 
 class CardEditActivity : AppCompatActivity() {
 
@@ -47,10 +48,15 @@ class CardEditActivity : AppCompatActivity() {
             it.viewModel = ViewModelProviders.of(this).get(CardEditViewModel::class.java)
         }
 
+        binding.appBar.addOnOffsetChangedListener(FadeoutOffsetChangeListener(binding.squareCardFrame))
+
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.run {
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowHomeEnabled(true)
+
+        if (card.refId.isNotEmpty()) {
+            supportActionBar?.run {
+                setDisplayHomeAsUpEnabled(true)
+                setDisplayShowHomeEnabled(true)
+            }
         }
     }
 

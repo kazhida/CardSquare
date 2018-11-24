@@ -33,7 +33,7 @@
     </style>
 
     <style name="ShadowedNameText" parent="ShadowedText">
-        <item name="android:textSize">@dimen/fs_large</item>
+        <item name="android:textSize">@dimen/fs_x_large</item>
     </style>
 
     <style name="ShadowedPhoneticText" parent="ShadowedText">
@@ -51,6 +51,13 @@
            parent="android:style/Theme.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="TransparentTextAppearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#00000000</item>
+    </style>
+    <style name="WhiteTextAppearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/textColorPrimary</item>
     </style>
 
 </resources>

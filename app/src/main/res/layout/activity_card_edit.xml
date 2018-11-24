@@ -31,15 +31,22 @@
                     android:layout_height="match_parent"
                     app:toolbarId="@+id/toolbar"
                     app:title="@{viewModel.handleName}"
+                    app:collapsedTitleTextAppearance="@style/WhiteTextAppearance"
+                    app:expandedTitleTextAppearance="@style/TransparentTextAppearance"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed"
                     app:contentScrim="?attr/colorPrimary">
 
-                <fragment
-                        android:id="@+id/square_card"
+                <FrameLayout
+                        android:id="@+id/square_card_frame"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:name="com.abplus.cardsquare.ui.common.SquareCardFragment"
-                        />
+                        android:layout_height="wrap_content">
+                    <fragment
+                            android:id="@+id/square_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:name="com.abplus.cardsquare.ui.common.SquareCardFragment"
+                            />
+                </FrameLayout>
 
                 <androidx.appcompat.widget.Toolbar
                         android:id="@+id/toolbar"
