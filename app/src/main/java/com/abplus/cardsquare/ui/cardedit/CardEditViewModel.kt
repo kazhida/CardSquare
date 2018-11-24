@@ -5,19 +5,18 @@ import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.abplus.cardsquare.domain.models.Card
-import com.abplus.cardsquare.utils.views.SquareCardViewModel
 
 class CardEditViewModel(
-        context: Application
-) : AndroidViewModel(context) {
+        app: Application
+) : AndroidViewModel(app) {
+
     private var isFirstCard: Boolean = false
-    var cardViewModel = SquareCardViewModel(context)
-    var handleName = MutableLiveData<String>()
-    var firstName = MutableLiveData<String>()
-    var familyName = MutableLiveData<String>()
-    var coverImageUrl = MutableLiveData<String>()
-    var introduction = MutableLiveData<String>()
-    var description = MutableLiveData<String>()
+    val handleName = MutableLiveData<String>()
+    val firstName = MutableLiveData<String>()
+    val familyName = MutableLiveData<String>()
+    val coverImageUrl = MutableLiveData<String>()
+    val introduction = MutableLiveData<String>()
+    val description = MutableLiveData<String>()
 
     fun reset(card: Card) {
         isFirstCard = card.refId.isEmpty()
@@ -27,8 +26,6 @@ class CardEditViewModel(
         coverImageUrl.value = card.coverImageUrl
         introduction.value = card.introduction
         description.value = card.description
-        cardViewModel.initAccountIcons(card.accounts)
-        cardViewModel.coverImageUrl.value = card.coverImageUrl
     }
 
     val visibleAtFirst: Int

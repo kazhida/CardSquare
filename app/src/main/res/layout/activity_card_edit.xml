@@ -30,19 +30,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:toolbarId="@+id/toolbar"
+                    app:title="@{viewModel.handleName}"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed"
                     app:contentScrim="?attr/colorPrimary">
 
-                <com.abplus.cardsquare.utils.views.SquareCardView
+                <fragment
                         android:id="@+id/square_card"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:name="com.abplus.cardsquare.ui.common.SquareCardFragment"
+                        />
 
                 <androidx.appcompat.widget.Toolbar
                         android:id="@+id/toolbar"
                         android:layout_height="?attr/actionBarSize"
                         android:layout_width="match_parent"
-                        app:title="@{viewModel.handleName}"
                         app:layout_collapseMode="pin"
                         app:popupTheme="@style/AppTheme.PopupOverlay"/>
 

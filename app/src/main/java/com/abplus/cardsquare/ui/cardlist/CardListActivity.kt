@@ -22,7 +22,6 @@ import androidx.viewpager.widget.ViewPager
 import com.abplus.cardsquare.R
 import com.abplus.cardsquare.domain.models.Card
 import com.abplus.cardsquare.utils.GlideApp
-import com.abplus.cardsquare.utils.views.SquareCardView
 
 /**
  * 自分のカードを表示するアクティビティ
@@ -137,7 +136,6 @@ class CardListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         private inner class ViewFactory(parent: ViewGroup) {
             val root: View = layoutInflater.inflate(R.layout.view_my_card, parent, false)
-            private val headerCard: SquareCardView = root.findViewById(R.id.header_card)
             private val partnerList: ListView = root.findViewById(R.id.partner_list)
 
             fun update(card: Card) {

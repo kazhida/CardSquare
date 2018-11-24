@@ -12,8 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.abplus.cardsquare.R
 import com.abplus.cardsquare.databinding.ActivityCardEditBinding
 import com.abplus.cardsquare.domain.models.Card
-import com.abplus.cardsquare.utils.setupActionBar
-import com.abplus.cardsquare.utils.views.SquareCardView
+import com.abplus.cardsquare.ui.common.SquareCardFragment
 
 class CardEditActivity : AppCompatActivity() {
 
@@ -28,17 +27,28 @@ class CardEditActivity : AppCompatActivity() {
         }
     }
 
-    private val squareCardView: SquareCardView by lazy { findViewById<SquareCardView>(R.id.square_card) }
-    private lateinit var binding: ActivityCardEditBinding
-    private val card: Card by lazy { intent.getParcelableExtra<Card>(CARD) }
+    private val squareCardFragment: SquareCardFragment? by lazy {
+        supportFragmentManager.findFragmentById(R.id.square_card) as? SquareCardFragment
+    }
+
+    private val binding: ActivityCardEditBinding by lazy {
+        DataBindingUtil.setContentView<ActivityCardEditBinding>(this, R.layout.activity_card_edit)
+    }
+
+    private val card: Card by lazy {
+        intent.getParcelableExtra<Card>(CARD)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_card_edit)
-        binding.viewModel = ViewModelProviders.of(this).get(CardEditViewModel::class.java)
+        binding.let {
+            it.setLifecycleOwner(this)
+            it.viewModel = ViewModelProviders.of(this).get(CardEditViewModel::class.java)
+        }
 
-        setupActionBar(R.id.toolbar) {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.run {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
         }
@@ -47,21 +57,24 @@ class CardEditActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        binding.viewModel?.run {
-            squareCardView.resetViewModel(cardViewModel)
-            observeTransfer(handleName, cardViewModel.handleName)
-            observeTransfer(firstName, cardViewModel.firstName)
-            observeTransfer(familyName, cardViewModel.familyName)
-            observeTransfer(coverImageUrl, cardViewModel.coverImageUrl)
-            observeTransfer(introduction, cardViewModel.introduction)
-            observeTransfer(description, cardViewModel.description)
-            reset(card)
+        val editViewModel = binding.viewModel
+        val cardViewModel = squareCardFragment?.viewModel
+
+        if (editViewModel != null && cardViewModel != null) {
+            observeTransfer(editViewModel.handleName, cardViewModel.handleName)
+            observeTransfer(editViewModel.firstName, cardViewModel.firstName)
+            observeTransfer(editViewModel.familyName, cardViewModel.familyName)
+            observeTransfer(editViewModel.coverImageUrl, cardViewModel.coverImageUrl)
+            observeTransfer(editViewModel.introduction, cardViewModel.introduction)
+            observeTransfer(editViewModel.description, cardViewModel.description)
+            editViewModel.reset(card)
+            cardViewModel.initAccountIcons(card.accounts)
         }
     }
 
-    private fun observeTransfer(src: LiveData<String>, dst: MutableLiveData<String>) {
+    private fun observeTransfer(src: LiveData<String>, dst: MutableLiveData<String>?) {
         Observer<String> {
-            dst.value = it ?: ""
+            dst?.value = it
         }.let {
             val owner = this
             src.observe(owner, it)

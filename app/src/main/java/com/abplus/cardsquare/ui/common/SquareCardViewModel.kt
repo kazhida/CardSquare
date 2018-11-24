@@ -1,4 +1,4 @@
-package com.abplus.cardsquare.utils.views
+package com.abplus.cardsquare.ui.common
 
 import android.app.Application
 import android.view.View
@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import com.abplus.cardsquare.domain.models.Account
 
 class SquareCardViewModel(
-        context: Application
-) : AndroidViewModel(context) {
+        app: Application
+) : AndroidViewModel(app) {
 
     var handleName = MutableLiveData<String>()
     var firstName = MutableLiveData<String>()
