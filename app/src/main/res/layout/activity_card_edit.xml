@@ -7,7 +7,7 @@
     <data>
         <variable
                 name="viewModel"
-                type="com.abplus.cardsquare.ui.cardedit.CardEditViewModel"/>
+                type="com.abplus.cardsquare.app.ui.cardedit.CardEditViewModel"/>
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -44,7 +44,7 @@
                             android:id="@+id/square_card"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:name="com.abplus.cardsquare.ui.common.SquareCardFragment"
+                            android:name="com.abplus.cardsquare.app.ui.common.SquareCardFragment"
                             />
                 </FrameLayout>
 
