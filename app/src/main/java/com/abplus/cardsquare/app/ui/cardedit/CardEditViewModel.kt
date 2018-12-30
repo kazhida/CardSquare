@@ -4,7 +4,7 @@ import android.app.Application
 import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.abplus.cardsquare.app.domain.models.Card
+import com.abplus.cardsquare.domain.models.Card
 
 class CardEditViewModel(
         app: Application

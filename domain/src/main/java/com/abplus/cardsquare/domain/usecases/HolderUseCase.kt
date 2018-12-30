@@ -1,30 +1,18 @@
-package com.abplus.cardsquare.app.domain.usecases
+package com.abplus.cardsquare.domain.usecases
 
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
-import com.abplus.cardsquare.app.domain.models.Account
-import com.abplus.cardsquare.app.data.firebase.repositories.AccountRepository
-import com.abplus.cardsquare.app.data.firebase.repositories.HolderRepository
-import com.abplus.cardsquare.app.domain.models.Holder
+import com.abplus.cardsquare.domain.models.Account
+import com.abplus.cardsquare.domain.models.Holder
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 
-class HolderUseCase private constructor(
+class HolderUseCase(
         private val accountRepository: Account.Repository,
 //        private val cardRepository: Card.Repository,
         private val holderRepository: Holder.Repository
 ) {
-
-    companion object {
-
-        fun firebaseInstance() = HolderUseCase(
-                AccountRepository(),
-                //CardRepository(),
-                HolderRepository()
-        )
-    }
-
     val currentHolder: Deferred<Holder?> get() = holderRepository.current
 
 //    fun loadCards(userId: String): List<Card> = ArrayList<Card>().apply {

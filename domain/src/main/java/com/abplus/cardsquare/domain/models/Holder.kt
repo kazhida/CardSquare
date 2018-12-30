@@ -1,8 +1,7 @@
-package com.abplus.cardsquare.app.domain.models
+package com.abplus.cardsquare.domain.models
 
 import android.os.Parcelable
 import androidx.fragment.app.FragmentActivity
-import com.abplus.cardsquare.app.utils.RandomImages
 import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.Deferred
 
@@ -29,19 +28,6 @@ data class Holder(
     }
 
     fun add(accounts: Map<String, Account>): Holder = copy(accounts = accounts.append(accounts))
-
-    fun initialCard(): Card = Card(
-            refId = "",
-            userId = refId,
-            handleName = defaultName,
-            firstName = "John/Jane",
-            familyName = "Doe",
-            coverImageUrl = RandomImages.nextAssetImageUrl(),
-            introduction = "ここでは、自己紹介文などを記入します。\nカードの左上に表示されます。",
-            description = "ここには、なにを記入してもかまいません。\nカードの右下に表示されます。\nこのサービスでは住所はあつかっていないので、ここを使用するとよいでしょう。",
-            accounts = listOf(accounts.entries.first().value),
-            partners = ArrayList()
-    )
 
     interface Repository {
         fun signIn(activity: FragmentActivity, requestCode: Int, onFailed: (errorMessage: String)->Unit)

@@ -3,8 +3,8 @@ package com.abplus.cardsquare.app.data.firebase.repositories
 import androidx.fragment.app.FragmentActivity
 import com.abplus.cardsquare.app.R
 import com.abplus.cardsquare.app.data.firebase.HolderData
-import com.abplus.cardsquare.app.domain.models.Account
-import com.abplus.cardsquare.app.domain.models.Holder
+import com.abplus.cardsquare.domain.models.Account
+import com.abplus.cardsquare.domain.models.Holder
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.ConnectionResult

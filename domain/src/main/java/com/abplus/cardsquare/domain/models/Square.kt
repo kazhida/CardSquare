@@ -1,4 +1,4 @@
-package com.abplus.cardsquare.app.domain.models
+package com.abplus.cardsquare.domain.models
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

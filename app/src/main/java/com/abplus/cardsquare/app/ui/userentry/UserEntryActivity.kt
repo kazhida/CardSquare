@@ -6,8 +6,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.abplus.cardsquare.app.MainActivity
 import com.abplus.cardsquare.app.R
-import com.abplus.cardsquare.app.domain.usecases.HolderUseCase
+import com.abplus.cardsquare.domain.usecases.HolderUseCase
 import com.abplus.cardsquare.app.utils.LogUtil
 import com.abplus.cardsquare.app.utils.launchUI
 import com.google.android.material.snackbar.Snackbar
@@ -27,7 +28,7 @@ class UserEntryActivity : AppCompatActivity() {
     private val rootView: View  by lazy { findViewById<View>(R.id.root_view) }
     private val loginButton: View by lazy { findViewById<View>(R.id.google_login) }
 
-    private val holderUseCase: HolderUseCase by lazy { HolderUseCase.firebaseInstance() }
+    private val holderUseCase: HolderUseCase by lazy { MainActivity.createHolderUseCase() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

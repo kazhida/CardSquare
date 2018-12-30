@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.abplus.cardsquare.app.R
 import com.abplus.cardsquare.app.databinding.ActivityCardEditBinding
-import com.abplus.cardsquare.app.domain.models.Card
+import com.abplus.cardsquare.domain.models.Card
 import com.abplus.cardsquare.app.ui.common.SquareCardFragment
 import com.abplus.cardsquare.app.utils.views.FadeoutOffsetChangeListener
 

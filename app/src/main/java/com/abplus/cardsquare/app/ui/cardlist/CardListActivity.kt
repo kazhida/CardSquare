@@ -20,7 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.abplus.cardsquare.app.R
-import com.abplus.cardsquare.app.domain.models.Card
+import com.abplus.cardsquare.domain.models.Card
 import com.abplus.cardsquare.app.utils.GlideApp
 
 /**

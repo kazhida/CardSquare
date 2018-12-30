@@ -1,7 +1,7 @@
 package com.abplus.cardsquare.app.data.firebase.repositories
 
 import android.content.Intent
-import com.abplus.cardsquare.app.domain.models.Account
+import com.abplus.cardsquare.domain.models.Account
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.firebase.auth.FirebaseUser

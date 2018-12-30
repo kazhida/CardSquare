@@ -1,7 +1,7 @@
 package com.abplus.cardsquare.app.data.firebase.repositories
 
-import com.abplus.cardsquare.app.domain.models.Account
-import com.abplus.cardsquare.app.domain.models.Card
+import com.abplus.cardsquare.domain.models.Account
+import com.abplus.cardsquare.domain.models.Card
 import kotlinx.coroutines.Deferred
 
 class CardRepository : FirebaseRepository(), Card.Repository {
