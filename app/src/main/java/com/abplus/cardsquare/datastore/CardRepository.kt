@@ -1,9 +1,9 @@
 package com.abplus.cardsquare.datastore
 
+import com.abplus.cardsquare.app.utils.RandomImages
 import com.abplus.cardsquare.domain.entities.Account
 import com.abplus.cardsquare.domain.entities.Card
 import com.abplus.cardsquare.domain.entities.User
-import com.abplus.cardsquare.utils.RandomImages
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope

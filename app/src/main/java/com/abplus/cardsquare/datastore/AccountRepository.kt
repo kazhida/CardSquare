@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
-import com.abplus.cardsquare.R
+import com.abplus.cardsquare.app.R
+import com.abplus.cardsquare.app.utils.LogUtil
 import com.abplus.cardsquare.domain.entities.Account
-import com.abplus.cardsquare.utils.*
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.ConnectionResult
