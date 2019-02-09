@@ -1,4 +1,4 @@
-package com.abplus.cardsquare.utils
+package com.abplus.cardsquare.app.utils
 
 import java.util.*
 

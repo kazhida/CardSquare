@@ -1,19 +1,17 @@
-package com.abplus.cardsquare
+package com.abplus.cardsquare.app.ui.userentry
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.abplus.cardsquare.datastore.AccountRepository
-import com.abplus.cardsquare.datastore.CardRepository
-import com.abplus.cardsquare.datastore.UserRepository
-import com.abplus.cardsquare.domain.UserDomain
-import com.abplus.cardsquare.domain.entities.Account
-import com.abplus.cardsquare.utils.LogUtil
+import com.abplus.cardsquare.app.MainActivity
+import com.abplus.cardsquare.app.R
+import com.abplus.cardsquare.domain.usecases.HolderUseCase
+import com.abplus.cardsquare.app.utils.LogUtil
+import com.abplus.cardsquare.app.utils.launchUI
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class UserEntryActivity : AppCompatActivity() {
 
@@ -30,13 +28,7 @@ class UserEntryActivity : AppCompatActivity() {
     private val rootView: View  by lazy { findViewById<View>(R.id.root_view) }
     private val loginButton: View by lazy { findViewById<View>(R.id.google_login) }
 
-    private val userDomain: UserDomain by lazy {
-        UserDomain(
-                UserRepository(),
-                AccountRepository(),
-                CardRepository()
-        )
-    }
+    private val holderUseCase: HolderUseCase by lazy { MainActivity.createHolderUseCase() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,13 +41,14 @@ class UserEntryActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
 
-        GlobalScope.launch {
-            val user = userDomain.currentUser().await()
-            if (user != null) {
+        launchUI {
+            val holder = holderUseCase.currentHolder.await()
+            if (holder != null) {
                 // 登録ができたので終わる
+                setResult(Activity.RESULT_OK)
                 finish()
             }
         }
@@ -66,8 +59,13 @@ class UserEntryActivity : AppCompatActivity() {
 
         if (requestCode == REQUEST_SIGN_IN) {
             try {
-                userDomain.onActivityResult(data)
-            } catch (e: Account.AccountException) {
+                val task = holderUseCase.onActivityResult(data)
+                launchUI {
+                    if (task.await() != null) {
+                        finish()
+                    }
+                }
+            } catch (e: Exception) {
                 val message = e.message
                 LogUtil.e("Sign-in error: $message")
                 Snackbar.make(rootView, R.string.err_cannot_login, Snackbar.LENGTH_SHORT).show()
@@ -76,6 +74,9 @@ class UserEntryActivity : AppCompatActivity() {
     }
 
     private fun signIn() {
-        userDomain.signIn(this, REQUEST_SIGN_IN)
+        holderUseCase.signIn(this, REQUEST_SIGN_IN) { errorMessage ->
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
+            LogUtil.e("Google Sign in failed: $errorMessage")
+        }
     }
 }

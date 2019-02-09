@@ -1,16 +1,12 @@
-package com.abplus.cardsquare
+package com.abplus.cardsquare.app.ui.cardlist
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.navigation.NavigationView
 import androidx.core.view.GravityCompat
-import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -19,70 +15,51 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
-import com.abplus.cardsquare.datastore.AccountRepository
-import com.abplus.cardsquare.datastore.CardRepository
-import com.abplus.cardsquare.datastore.UserRepository
-import com.abplus.cardsquare.domain.UserDomain
-import com.abplus.cardsquare.domain.entities.Card
-import com.abplus.cardsquare.domain.entities.User
-import com.abplus.cardsquare.views.SquareCardView
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
+import com.abplus.cardsquare.app.R
+import com.abplus.cardsquare.domain.models.Card
+import com.abplus.cardsquare.app.utils.GlideApp
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+/**
+ * 自分のカードを表示するアクティビティ
+ *
+ * 初回の登録時以後は、これがアプリの起点になる
+ */
+class CardListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     companion object {
-        private const val REQUEST_ENTRY = 6592
-        private const val REQUEST_CARD = 6593
+        private const val CARDS = "CARDS"
+
+        fun start(activity: Activity, cards: List<Card>, requestCode: Int) {
+            Intent(activity, CardListActivity::class.java).let {
+                it.putExtra(CARDS, cards.toTypedArray())
+                activity.startActivityForResult(it, requestCode)
+            }
+        }
     }
 
     private val toolbar: Toolbar by lazy { findViewById<Toolbar>(R.id.toolbar) }
-    private val drawerLayout by lazy { findViewById<DrawerLayout>(R.id.drawer_layout) }
-    private val navView by lazy { findViewById<NavigationView>(R.id.nav_view) }
-
-    private val adapter: CardPagerAdapter by lazy { CardPagerAdapter() }
-    private val userDomain: UserDomain by lazy {
-        UserDomain(
-                UserRepository(),
-                AccountRepository(),
-                CardRepository()
-        )
-    }
-    private var currentUser: User? = null
+    private val drawerLayout: DrawerLayout by lazy { findViewById<DrawerLayout>(R.id.drawer_layout) }
+    private val viewParent: ViewPager by lazy { findViewById<ViewPager>(R.id.view_pager) }
+    private val navView: NavigationView by lazy { findViewById<NavigationView>(R.id.nav_view) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_card_list)
         setSupportActionBar(toolbar)
 
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
+        val cards = intent.getParcelableArrayExtra(CARDS).map { it as Card }
+        viewParent.adapter = CardPagerAdapter(cards)
+
         navView.setNavigationItemSelectedListener(this)
     }
-
-    override fun onResume() {
-        super.onResume()
-
-        GlobalScope.launch {
-            currentUser = userDomain.currentUser().await()
-            if (currentUser == null) {
-                UserEntryActivity.start(this@MainActivity, REQUEST_ENTRY)
-            } else {
-                currentUser?.let {  user ->
-                    if (user.cards.isEmpty()) {
-                        GlobalScope.launch {
-                            CardEditActivity.start(this@MainActivity, CardRepository.initialCard(user), REQUEST_CARD)
-                        }
-                    } else {
-                        adapter.notifyDataSetChanged()
-                    }
-                }
-            }
-        }
-    }
-
 
     override fun onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -93,7 +70,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.card_list, menu)
         return true
     }
 
@@ -128,19 +106,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode == Activity.RESULT_CANCELED) {
-            // ユーザ登録しないので、終了する
-            finish()
-        }
-    }
-
-    private inner class CardPagerAdapter : PagerAdapter(), ViewPager.OnPageChangeListener {
-
-        private val dummies = ArrayList<Card>()
-        private val items: List<Card> get() = currentUser?.cards ?: dummies
+    private inner class CardPagerAdapter(private val items: List<Card>) : PagerAdapter(), ViewPager.OnPageChangeListener {
 
         override fun isViewFromObject(view: View, obj: Any): Boolean = view === obj
         override fun getCount(): Int = items.size
@@ -170,11 +136,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         private inner class ViewFactory(parent: ViewGroup) {
             val root: View = layoutInflater.inflate(R.layout.view_my_card, parent, false)
-            private val headerCard: SquareCardView = root.findViewById(R.id.header_card)
             private val partnerList: ListView = root.findViewById(R.id.partner_list)
 
             fun update(card: Card) {
-                headerCard.update(card)
+                //headerCard.update(cardViewModel)
                 partnerList.adapter = PartnerAdapter(card.partners)
             }
         }
@@ -206,7 +171,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 fun update(card: Card) {
                     imageView.loadUrl(card.coverImageUrl)
-                    nameText.text = card.name
+                    nameText.text = card.handleName
                     firstNameText.text = card.firstName
                     familyNameText.text = card.familyName
                 }

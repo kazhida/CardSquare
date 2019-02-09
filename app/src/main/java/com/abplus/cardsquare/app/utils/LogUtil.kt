@@ -1,7 +1,7 @@
-package com.abplus.cardsquare.utils
+package com.abplus.cardsquare.app.utils
 
 import android.util.Log
-import com.abplus.cardsquare.BuildConfig
+import com.abplus.cardsquare.app.BuildConfig
 
 object LogUtil {
     private val tag: String

@@ -7,6 +7,11 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
 
+    <string name="google">Google</string>
+    <string name="twitter">Twitter</string>
+    <string name="facebook">Facebook</string>
+    <string name="github">GitHub</string>
+
     <string name="action_settings">Settings</string>
 
     <string name="icon">アイコン</string>
@@ -18,7 +23,7 @@
     <string name="nav_accounts">アカウント管理</string>
     <string name="action_edit_card">カードの編集</string>
 
-    <string name="hint_name_edit">氏名を入力</string>
+    <string name="hint_handle_name_edit">ハンドル名を入力</string>
     <string name="hint_first_name_edit">First nameを入力（ローマ字推奨）</string>
     <string name="hint_family_name_edit">Family nameを入力（ローマ字推奨）</string>
     <string name="hint_introduce_edit">自己紹介を入力</string>
@@ -41,5 +46,7 @@
         "カードに関連づけるアカウントを選択します。\n"
         "タップすることで、トグル状に変更されます。"
     </string>
+    <string name="title_activity_card_list">CardListActivity</string>
+    <string name="title_activity_card_detail">CardDetailActivity</string>
 
 </resources>

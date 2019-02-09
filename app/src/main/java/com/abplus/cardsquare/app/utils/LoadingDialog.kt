@@ -1,8 +1,8 @@
-package com.abplus.cardsquare.utils
+package com.abplus.cardsquare.app.utils
 
 import android.app.Dialog
 import android.content.Context
-import com.abplus.cardsquare.R
+import com.abplus.cardsquare.app.R
 
 object LoadingDialog {
 

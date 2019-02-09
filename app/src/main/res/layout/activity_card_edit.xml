@@ -1,175 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<layout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/root_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         >
+    <data>
+        <variable
+                name="viewModel"
+                type="com.abplus.cardsquare.app.ui.cardedit.CardEditViewModel"/>
+    </data>
 
-    <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar"
-            android:fitsSystemWindows="true"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:theme="@style/AppTheme.AppBarOverlay">
-
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/toolbar_layout"
-                android:fitsSystemWindows="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:toolbarId="@+id/toolbar"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:contentScrim="?attr/colorPrimary">
-
-            <com.abplus.cardsquare.views.SquareCardView
-                    android:id="@+id/square_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
-            <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_width="match_parent"
-                    app:layout_collapseMode="pin"
-                    app:popupTheme="@style/AppTheme.PopupOverlay"/>
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/root_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:context=".ui.cardedit.CardEditActivity"
             >
-        <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
-            <!-- チュートリアルの説明 -->
-            <TextView
-                    android:id="@+id/tutorial_text_0"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/colorPrimary"
-                    android:padding="16dp"
-                    android:text="@string/tutorial_card_edit"
-                    android:textColor="@color/textColorPrimary"
-                    android:textSize="@dimen/fs_large"
-                    android:lineSpacingExtra="1pt"
-                    />
-            <!-- 氏名 -->
-            <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    >
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/name_edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/hint_name_edit"
-                        style="@style/NameText"
-                        android:maxLines="1"
-                        android:inputType="text"
-                        />
-            </com.google.android.material.textfield.TextInputLayout>
-            <!-- First name -->
-            <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    >
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/first_name_edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/hint_first_name_edit"
-                        style="@style/NameText"
-                        android:maxLines="1"
-                        android:inputType="textPhonetic"
-                        />
-            </com.google.android.material.textfield.TextInputLayout>
-            <!-- Family name -->
-            <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    >
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/family_name_edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/hint_family_name_edit"
-                        style="@style/NameText"
-                        android:maxLines="1"
-                        android:inputType="textPhonetic"
-                        />
-            </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- 自己紹介 -->
-            <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar"
+                android:fitsSystemWindows="true"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:theme="@style/AppTheme.AppBarOverlay">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:id="@+id/toolbar_layout"
+                    android:fitsSystemWindows="true"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    >
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/introduction_edit"
+                    android:layout_height="match_parent"
+                    app:toolbarId="@+id/toolbar"
+                    app:title="@{viewModel.handleName}"
+                    app:collapsedTitleTextAppearance="@style/WhiteTextAppearance"
+                    app:expandedTitleTextAppearance="@style/TransparentTextAppearance"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                    app:contentScrim="?attr/colorPrimary">
+
+                <FrameLayout
+                        android:id="@+id/square_card_frame"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/hint_introduce_edit"
-                        style="@style/NameText"
-                        android:inputType="textMultiLine"
-                        />
-            </com.google.android.material.textfield.TextInputLayout>
-            <!-- 自己紹介 -->
-            <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    >
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/description_edit"
+                        android:layout_height="wrap_content">
+                    <fragment
+                            android:id="@+id/square_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:name="com.abplus.cardsquare.app.ui.common.SquareCardFragment"
+                            />
+                </FrameLayout>
+
+                <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_height="?attr/actionBarSize"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/hint_description_edit"
-                        style="@style/NameText"
-                        android:inputType="textMultiLine"
-                        />
-            </com.google.android.material.textfield.TextInputLayout>
-            <!-- チュートリアルの説明 -->
-            <TextView
-                    android:id="@+id/tutorial_text_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/colorPrimary"
-                    android:padding="16dp"
-                    android:text="@string/tutorial_card_edit"
-                    android:textColor="@color/textColorPrimary"
-                    android:textSize="@dimen/fs_large"
-                    android:lineSpacingExtra="1pt"
-                    />
-            <!-- アカウントリスト -->
+                        app:layout_collapseMode="pin"
+                        app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                >
             <LinearLayout
-                    android:id="@+id/account_container"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    />
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+                    >
+                <!-- チュートリアルの説明 -->
+                <TextView
+                        android:id="@+id/tutorial_text_0"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:padding="16dp"
+                        android:text="@string/tutorial_card_edit"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="@dimen/fs_large"
+                        android:lineSpacingExtra="1pt"
+                        android:visibility="@{viewModel.visibleAtFirst}"
+                        />
+                <!-- 氏名 -->
+                <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        >
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/name_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/hint_handle_name_edit"
+                            style="@style/NameText"
+                            android:text="@={viewModel.handleName}"
+                            android:maxLines="1"
+                            android:inputType="text"
+                            />
+                </com.google.android.material.textfield.TextInputLayout>
+                <!-- First handleName -->
+                <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        >
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/first_name_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/hint_first_name_edit"
+                            style="@style/NameText"
+                            android:text="@={viewModel.firstName}"
+                            android:maxLines="1"
+                            android:inputType="textPhonetic"
+                            />
+                </com.google.android.material.textfield.TextInputLayout>
+                <!-- Family handleName -->
+                <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        >
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/family_name_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/hint_family_name_edit"
+                            style="@style/NameText"
+                            android:text="@={viewModel.familyName}"
+                            android:maxLines="1"
+                            android:inputType="textPhonetic"
+                            />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- 自己紹介 -->
+                <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        >
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/introduction_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/hint_introduce_edit"
+                            android:text="@={viewModel.introduction}"
+                            style="@style/NameText"
+                            android:inputType="textMultiLine"
+                            />
+                </com.google.android.material.textfield.TextInputLayout>
+                <!-- 自己紹介 -->
+                <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        >
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/description_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/hint_description_edit"
+                            android:text="@={viewModel.description}"
+                            style="@style/NameText"
+                            android:inputType="textMultiLine"
+                            />
+                </com.google.android.material.textfield.TextInputLayout>
+                <!-- チュートリアルの説明 -->
+                <TextView
+                        android:id="@+id/tutorial_text_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:padding="16dp"
+                        android:text="@string/tutorial_card_account"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="@dimen/fs_large"
+                        android:lineSpacingExtra="1pt"
+                        android:visibility="@{viewModel.visibleAtFirst}"
+                        />
+                <!-- アカウントリスト -->
+                <LinearLayout
+                        android:id="@+id/account_container"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
