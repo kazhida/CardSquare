@@ -4,16 +4,17 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.abplus.cardsquare.app.data.firebase.repositories.AccountRepository
-import com.abplus.cardsquare.app.data.firebase.repositories.HolderRepository
 import com.abplus.cardsquare.app.ui.cardedit.CardEditActivity
 import com.abplus.cardsquare.app.ui.cardlist.CardListActivity
 import com.abplus.cardsquare.app.ui.userentry.UserEntryActivity
 import com.abplus.cardsquare.app.utils.RandomImages
-import com.abplus.cardsquare.app.utils.launchUI
-import com.abplus.cardsquare.domain.models.Card
-import com.abplus.cardsquare.domain.models.Holder
-import com.abplus.cardsquare.domain.usecases.HolderUseCase
+import com.abplus.cardsquare.di.UseCaseFactory
+import com.abplus.cardsquare.domain.entities.Card
+import com.abplus.cardsquare.domain.entities.User
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import timber.log.Timber.DebugTree
+import timber.log.Timber
 
 
 /**
@@ -28,34 +29,32 @@ class MainActivity : AppCompatActivity() {
         private const val REQUEST_CARD = 6593
         private const val REQUEST_LIST = 6594
 
-        fun createHolderUseCase() = HolderUseCase(
-                AccountRepository(),
-                //CardRepository(),
-                HolderRepository()
-        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Timber.plant(DebugTree())
     }
 
     override fun onResume() {
         super.onResume()
 
-        launchUI {
-            val useCase = createHolderUseCase()
-            val holder = useCase.currentHolder.await()
+        GlobalScope.launch {
+            val useCase = UseCaseFactory.createUserUseCase()
+            val user = useCase.currentUser()
+            val activity = this@MainActivity
 
             when {
-                holder == null -> UserEntryActivity.start(this, REQUEST_ENTRY)
-                holder.cards.isEmpty() -> CardEditActivity.start(this, initialCard(holder), REQUEST_CARD)
-                else -> CardListActivity.start(this, holder.cards, REQUEST_LIST)
+                user == null            -> UserEntryActivity.start(activity, REQUEST_ENTRY)
+                user.cards.isEmpty()    -> CardEditActivity.start(activity, initialCard(user), REQUEST_CARD)
+                else                    -> CardListActivity.start(activity, user.cards, REQUEST_LIST)
             }
         }
     }
 
-    private fun initialCard(holder: Holder): Card = Card(
+    private fun initialCard(holder: User): Card = Card(
             refId = "",
             userId = holder.refId,
             handleName = holder.defaultName,
@@ -64,7 +63,7 @@ class MainActivity : AppCompatActivity() {
             coverImageUrl = RandomImages.nextAssetImageUrl(),
             introduction = "ここでは、自己紹介文などを記入します。\nカードの左上に表示されます。",
             description = "ここには、なにを記入してもかまいません。\nカードの右下に表示されます。\nこのサービスでは住所はあつかっていないので、ここを使用するとよいでしょう。",
-            accounts = listOf(holder.accounts.entries.first().value),
+            accounts = listOf(holder.accounts.first()),
             partners = ArrayList()
     )
 

@@ -18,7 +18,7 @@ class SquareCardFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_square_card, container).also { view ->
             binding = FragmentSquareCardBinding.bind(view).also { binding ->
-                binding.setLifecycleOwner(this)
+                binding.lifecycleOwner = this
                 binding.viewModel = ViewModelProviders.of(this).get(SquareCardViewModel::class.java)
             }
         }

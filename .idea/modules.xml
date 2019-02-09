@@ -5,7 +5,9 @@
       <module fileurl="file://$PROJECT_DIR$/CardSquare.iml" filepath="$PROJECT_DIR$/CardSquare.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/datastores/datastores.iml" filepath="$PROJECT_DIR$/datastores/datastores.iml" />
-      <module fileurl="file://$PROJECT_DIR$/domain/domain.iml" filepath="$PROJECT_DIR$/domain/domain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/datastores/datastores.iml" filepath="$PROJECT_DIR$/datastores/datastores.iml" />
+      <module fileurl="file://$PROJECT_DIR$/di/di.iml" filepath="$PROJECT_DIR$/di/di.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domains/domains.iml" filepath="$PROJECT_DIR$/domains/domains.iml" />
     </modules>
   </component>
 </project>

@@ -4,14 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.abplus.cardsquare.app.MainActivity
 import com.abplus.cardsquare.app.R
-import com.abplus.cardsquare.domain.usecases.HolderUseCase
-import com.abplus.cardsquare.app.utils.LogUtil
-import com.abplus.cardsquare.app.utils.launchUI
+import com.abplus.cardsquare.di.UseCaseFactory
+import com.abplus.cardsquare.domain.usecases.UserUseCase
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class UserEntryActivity : AppCompatActivity() {
 
@@ -28,7 +28,7 @@ class UserEntryActivity : AppCompatActivity() {
     private val rootView: View  by lazy { findViewById<View>(R.id.root_view) }
     private val loginButton: View by lazy { findViewById<View>(R.id.google_login) }
 
-    private val holderUseCase: HolderUseCase by lazy { MainActivity.createHolderUseCase() }
+    private val useCase: UserUseCase by lazy { UseCaseFactory.createUserUseCase() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +44,8 @@ class UserEntryActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        launchUI {
-            val holder = holderUseCase.currentHolder.await()
+        GlobalScope.launch {
+            val holder = useCase.currentUser()
             if (holder != null) {
                 // 登録ができたので終わる
                 setResult(Activity.RESULT_OK)
@@ -59,24 +59,17 @@ class UserEntryActivity : AppCompatActivity() {
 
         if (requestCode == REQUEST_SIGN_IN) {
             try {
-                val task = holderUseCase.onActivityResult(data)
-                launchUI {
-                    if (task.await() != null) {
-                        finish()
-                    }
-                }
+                useCase.onActivityResult(data)
+                finish()
             } catch (e: Exception) {
                 val message = e.message
-                LogUtil.e("Sign-in error: $message")
+                Timber.e("Sign-in error: $message")
                 Snackbar.make(rootView, R.string.err_cannot_login, Snackbar.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun signIn() {
-        holderUseCase.signIn(this, REQUEST_SIGN_IN) { errorMessage ->
-            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
-            LogUtil.e("Google Sign in failed: $errorMessage")
-        }
+        useCase.signIn(this,getString(R.string.default_web_client_id),  REQUEST_SIGN_IN)
     }
 }
