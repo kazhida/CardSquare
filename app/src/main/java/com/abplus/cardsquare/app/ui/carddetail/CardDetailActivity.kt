@@ -3,11 +3,15 @@ package com.abplus.cardsquare.app.ui.carddetail
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.abplus.cardsquare.app.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-import kotlinx.android.synthetic.main.activity_card_detail.*
 
 class CardDetailActivity : AppCompatActivity() {
+
+    private val toolbar: Toolbar by lazy { findViewById<Toolbar>(R.id.toolbar) }
+    private val fab: FloatingActionButton by lazy { findViewById<FloatingActionButton>(R.id.fab) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
