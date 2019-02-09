@@ -1,4 +1,4 @@
-package com.abplus.cardsquare.entities
+package com.abplus.cardsquare.domain.entities
 
 /**
  * スクエアのエンティティに必要な物とその実装

@@ -19,11 +19,15 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
-import com.abplus.cardsquare.entities.Card
-import com.abplus.cardsquare.domains.UserDomain
-import com.abplus.cardsquare.entities.User
-import com.abplus.cardsquare.utils.*
+import com.abplus.cardsquare.datastore.AccountRepository
+import com.abplus.cardsquare.datastore.CardRepository
+import com.abplus.cardsquare.datastore.UserRepository
+import com.abplus.cardsquare.domain.UserDomain
+import com.abplus.cardsquare.domain.entities.Card
+import com.abplus.cardsquare.domain.entities.User
 import com.abplus.cardsquare.views.SquareCardView
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -37,7 +41,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val navView by lazy { findViewById<NavigationView>(R.id.nav_view) }
 
     private val adapter: CardPagerAdapter by lazy { CardPagerAdapter() }
-    private val userDomain: UserDomain by lazy { UserDomain() }
+    private val userDomain: UserDomain by lazy {
+        UserDomain(
+                UserRepository(),
+                AccountRepository(),
+                CardRepository()
+        )
+    }
     private var currentUser: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,15 +65,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
 
-        launchFB {
+        GlobalScope.launch {
             currentUser = userDomain.currentUser().await()
             if (currentUser == null) {
-                UserEntryActivity.start(this, REQUEST_ENTRY)
+                UserEntryActivity.start(this@MainActivity, REQUEST_ENTRY)
             } else {
                 currentUser?.let {  user ->
                     if (user.cards.isEmpty()) {
-                        launchFB {
-                            CardEditActivity.start(this, userDomain.initialCard(), REQUEST_CARD)
+                        GlobalScope.launch {
+                            CardEditActivity.start(this@MainActivity, CardRepository.initialCard(user), REQUEST_CARD)
                         }
                     } else {
                         adapter.notifyDataSetChanged()

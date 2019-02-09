@@ -5,11 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.abplus.cardsquare.entities.Account
-import com.abplus.cardsquare.domains.UserDomain
+import com.abplus.cardsquare.datastore.AccountRepository
+import com.abplus.cardsquare.datastore.CardRepository
+import com.abplus.cardsquare.datastore.UserRepository
+import com.abplus.cardsquare.domain.UserDomain
+import com.abplus.cardsquare.domain.entities.Account
 import com.abplus.cardsquare.utils.LogUtil
-import com.abplus.cardsquare.utils.launchFB
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class UserEntryActivity : AppCompatActivity() {
 
@@ -26,7 +30,13 @@ class UserEntryActivity : AppCompatActivity() {
     private val rootView: View  by lazy { findViewById<View>(R.id.root_view) }
     private val loginButton: View by lazy { findViewById<View>(R.id.google_login) }
 
-    private val userDomain: UserDomain by lazy { UserDomain() }
+    private val userDomain: UserDomain by lazy {
+        UserDomain(
+                UserRepository(),
+                AccountRepository(),
+                CardRepository()
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +52,7 @@ class UserEntryActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        launchFB {
+        GlobalScope.launch {
             val user = userDomain.currentUser().await()
             if (user != null) {
                 // 登録ができたので終わる

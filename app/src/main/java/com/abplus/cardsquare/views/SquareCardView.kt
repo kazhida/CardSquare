@@ -10,8 +10,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.abplus.cardsquare.R
-import com.abplus.cardsquare.entities.Account
-import com.abplus.cardsquare.entities.Card
+import com.abplus.cardsquare.domain.entities.Account
+import com.abplus.cardsquare.domain.entities.Card
 import com.abplus.cardsquare.utils.GlideApp
 
 class SquareCardView : CardView {

@@ -10,11 +10,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.abplus.cardsquare.entities.Account
-import com.abplus.cardsquare.entities.Card
+import com.abplus.cardsquare.domain.entities.Account
+import com.abplus.cardsquare.domain.entities.Card
 import com.abplus.cardsquare.views.SquareCardView
 import com.google.android.material.textfield.TextInputEditText
-import org.parceler.Parcels
 
 class CardEditActivity : AppCompatActivity() {
 
@@ -23,7 +22,7 @@ class CardEditActivity : AppCompatActivity() {
 
         fun start(activity: Activity, card: Card, requestCode: Int) {
             Intent(activity, CardEditActivity::class.java).let {
-                it.putExtra(CARD, Parcels.wrap(card))
+                it.putExtra(CARD, card)
                 activity.startActivityForResult(it, requestCode)
             }
         }
@@ -40,7 +39,7 @@ class CardEditActivity : AppCompatActivity() {
     private val descriptionEdit: TextInputEditText  by lazy { findViewById<TextInputEditText>(R.id.description_edit) }
     private val accountContainer: LinearLayout      by lazy { findViewById<LinearLayout>(R.id.account_container) }
 
-    private val card: Card by lazy { Parcels.unwrap<Card>(intent.getParcelableExtra(CARD)) }
+    private val card: Card by lazy { intent.getParcelableExtra<Card>(CARD) }
     private val isInitial: Boolean get() = card.refId.isEmpty()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +91,7 @@ class CardEditActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         val intent = Intent().apply {
-            putExtra(CARD, Parcels.wrap(squareCard.createCard(card.refId, card.partners)))
+            putExtra(CARD, squareCard.createCard(card.refId, card.partners))
         }
         setResult(Activity.RESULT_OK, intent)
     }
